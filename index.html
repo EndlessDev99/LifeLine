@@ -13,18 +13,28 @@
     --soy:#3A2A20;
     --soy-soft:#8A7565;
     --gold:#E8A93C;
-    --shadow: 0 10px 30px rgba(58,42,32,0.10);
+    --shadow: 0 10px 30px rgba(58,42,32,0.12);
   }
   *{box-sizing:border-box;}
+  html,body{ height:100%; }
   body{
     margin:0; min-height:100vh;
-    background: linear-gradient(160deg, #FFF8F0 0%, #FFEFEA 100%);
     font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
     display:flex; align-items:center; justify-content:center;
     padding:20px; color:var(--soy);
+    position:relative;
+    overflow-x:hidden;
+  }
+  #bgLayer{
+    position:fixed; inset:0; z-index:-1;
+    background-repeat: repeat, no-repeat;
+    background-size: 64px 64px, cover;
+    transition: background 0.8s ease;
   }
   .card{
-    background:var(--dumpling); width:100%; max-width:420px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    width:100%; max-width:420px;
     border-radius:28px; padding:34px 26px 30px; box-shadow:var(--shadow);
     position:relative; text-align:center;
     animation: pop 0.5s cubic-bezier(.2,1.4,.4,1);
@@ -47,6 +57,8 @@
   .opt-grid .opt-btn{ text-align:center; font-weight:700; }
   input[type="text"]{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); }
   input[type="text"]:focus{ outline:none; border-color:var(--gold); }
+  textarea{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); resize:vertical; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; }
+  textarea:focus{ outline:none; border-color:var(--gold); }
   .nav-row{ display:flex; gap:10px; margin-top:18px; }
   .btn{ flex:1; padding:14px; border-radius:16px; border:none; font-size:1rem; font-weight:600; cursor:pointer; transition:transform .12s, box-shadow .12s; }
   .btn:active{ transform:scale(.97); }
@@ -61,6 +73,7 @@
   .final-emoji{ font-size:3rem; margin-bottom:6px; text-align:center; }
   .hidden{ display:none !important; }
   .footnote{ margin-top:18px; font-size:.75rem; color:#CBB9A3; text-align:center; }
+  .credit{ margin-top:4px; font-size:.68rem; color:#DCC9B4; text-align:center; letter-spacing:.2px; }
   .final-options{ display:flex; flex-direction:column; gap:12px; }
   .final-options button{ width:100%; padding:16px; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; border:2px solid #F0E3D3; background:#FFFCF6; color:var(--soy); transition:all .15s; }
   .final-options button.picked{ background:var(--chili); color:#fff; border:none; box-shadow:0 8px 20px rgba(217,59,59,.35); }
@@ -68,13 +81,15 @@
 </head>
 <body>
 
+<div id="bgLayer"></div>
+
 <div class="card">
   <div class="progress" id="progressDots"></div>
 
   <!-- 0: welcome -->
   <div class="step" id="step0">
     <h1>Hey Aqsa Asif</h1>
-    <p class="sub">Just a few small questions first — please read all questions carefully — then something special. Won't take long 😊</p>
+    <p class="sub">Just a few quick questions—read them carefully, take your time, and answer honestly! 😊</p>
     <div class="nav-row"><button class="btn btn-primary" onclick="goTo(1)">Let's go →</button></div>
   </div>
 
@@ -99,6 +114,7 @@
       <button class="opt-btn" onclick="pickFood(this,'Pizza')">Pizza</button>
       <button class="opt-btn" onclick="pickFood(this,'Something else')">Something else</button>
     </div>
+    <input type="text" id="customFoodInput" placeholder="Type your favorite food..." class="hidden" style="margin-top:4px;">
     <p class="note-line">Armaghan's Favorite is Momos 🥟</p>
     <div class="nav-row">
       <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
@@ -108,13 +124,13 @@
 
   <!-- 3: love meter -->
   <div class="step hidden" id="step3">
-    <h1>Be honest 📊</h1>
+    <h1>Be honest 🌿</h1>
     <p class="sub">How much do you like Armaghan Danish's nature?</p>
     <div class="opt-grid" id="percentOptions">
-      <button class="opt-btn" onclick="pickPercent(this,'10%')">10%</button>
-      <button class="opt-btn" onclick="pickPercent(this,'50%')">50%</button>
-      <button class="opt-btn" onclick="pickPercent(this,'70%')">70%</button>
-      <button class="opt-btn" onclick="pickPercent(this,'100%')">100%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'10%')">🌱 10%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'50%')">🍃 50%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'70%')">🌿 70%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'100%')">🌸 100%</button>
     </div>
     <div class="nav-row">
       <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
@@ -125,16 +141,38 @@
   <!-- 4: what things do you like about him -->
   <div class="step hidden" id="step4">
     <h1>One more 💭</h1>
-    <p class="sub">What things do you like about him?</p>
-    <input type="text" id="likesInput" placeholder="Write anything...">
+    <p class="sub">What things do you like about me?</p>
+    <textarea id="likesInput" rows="6" placeholder="Write anything..."></textarea>
     <div class="nav-row">
       <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
       <button class="btn btn-primary" id="likesNext" onclick="saveLikes()" disabled>Next →</button>
     </div>
   </div>
 
-  <!-- 5: teaser (not recorded, just for fun) -->
-  <div class="step hidden yesno" id="step5">
+  <!-- 5: something I should know about you -->
+  <div class="step hidden" id="step5">
+    <h1>Your turn 📝</h1>
+    <p class="sub">Is there something I should know about you? Write anything you'd like me to know, anything special or common.</p>
+    <textarea id="aboutInput" rows="6" placeholder="Write anything..."></textarea>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(4)">← Back</button>
+      <button class="btn btn-primary" id="aboutNext" onclick="saveAbout()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- 6: one more open question -->
+  <div class="step hidden" id="step6">
+    <h1>Almost there 🌟</h1>
+    <p class="sub">What's one thing that always makes you smile?</p>
+    <textarea id="smileInput" rows="6" placeholder="Write anything..."></textarea>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(5)">← Back</button>
+      <button class="btn btn-primary" id="smileNext" onclick="saveSmile()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- 7: teaser (not recorded, just for fun) -->
+  <div class="step hidden yesno" id="step7">
     <h1>Real quick... 👀</h1>
     <p class="sub">Do you love Armaghan?</p>
     <div class="row">
@@ -142,30 +180,36 @@
       <button class="dodge-btn" id="teaserNoBtn" onclick="teaserDodge()">No</button>
     </div>
     <p class="taunt" id="teaserTaunt"></p>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(6)">← Back</button>
+    </div>
   </div>
 
-  <!-- 6: real final question -->
-  <div class="step hidden" id="step6">
+  <!-- 8: real final question -->
+  <div class="step hidden" id="step8">
     <h1>Okay, for real this time ❤️</h1>
     <p class="sub">Aqsa, do you love Armaghan Danish?</p>
     <div class="final-options">
       <button class="love-btn" id="loveYesBtn" onclick="selectFinal(this,'Yes, I love Armaghan Danish so much ❤️')">Yes, I love Armaghan Danish so much ❤️</button>
+      <button id="loveMaybeBtn" onclick="selectFinal(this,'Maybe around 70%, still figuring it out 💛')">Maybe around 70%, still figuring it out 💛</button>
       <button id="loveNoBtn" onclick="selectFinal(this,&quot;No, I don't love Armaghan Danish&quot;)">No, I don't love Armaghan Danish</button>
     </div>
     <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(7)">← Back</button>
       <button class="btn btn-primary" id="finalSubmitBtn" onclick="submitFinal()" disabled>Submit answer</button>
     </div>
   </div>
 
-  <!-- 7: thank you -->
-  <div class="step hidden" id="step7">
+  <!-- 9: thank you -->
+  <div class="step hidden" id="step9">
     <div class="final-emoji">❤️</div>
     <h1 id="thankTitle">Sent!</h1>
     <p class="sub">Thank you for submitting your views ❤️</p>
-    <div class="nav-row"><button class="btn btn-ghost" onclick="goTo(6)">← Change my answer</button></div>
+    <div class="nav-row"><button class="btn btn-ghost" onclick="goTo(8)">← Change my answer</button></div>
   </div>
 
   <div class="footnote">made with ❤️ for you</div>
+  <div class="credit">App Developed by Armaghan Danish 😂</div>
 </div>
 
 <script>
@@ -174,17 +218,85 @@
   const ENDPOINT = "https://formsubmit.co/ajax/" + NOTIFY_EMAIL;
 
   let currentStep = 0;
-  const totalSteps = 8;
+  const totalSteps = 10;
   const state = {
-    color: "", food: "", percent: "", likes: "", finalAnswer: ""
+    color: "", food: "", percent: "", likes: "", about: "", smile: "", finalAnswer: ""
   };
-  const history = { color: [], food: [], percent: [], likes: [] };
+  const history = { color: [], food: [], percent: [], likes: [], about: [], smile: [] };
 
   function logChange(field, value){
     const arr = history[field];
     if(arr.length === 0 || arr[arr.length-1] !== value){
       arr.push(value);
     }
+  }
+
+  // ---- decorative themed patterns (self-contained SVG "images", no external files needed) ----
+  function svgPattern(inner){
+    return "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>" + inner + "</svg>\")";
+  }
+
+  const PATTERN_HEART = svgPattern(
+    "<path d='M16 26s-8-5.2-11-9.6C2.6 12.6 4 8 8.4 6.9 10.8 6.3 13.3 7.5 16 10.4c2.7-2.9 5.2-4.1 7.6-3.5C28 7.9 29.4 12.6 26.5 16.4 23.5 20.8 16 26 16 26z' fill='%23D93B3B' fill-opacity='0.07'/><circle cx='48' cy='46' r='6' fill='%23E8A93C' fill-opacity='0.08'/>"
+  );
+  const PATTERN_WELCOME = svgPattern(
+    "<path d='M0 42 Q16 30 32 42 T64 42' stroke='%23E8A93C' stroke-opacity='0.1' stroke-width='2' fill='none'/><path d='M16 8 L18 14 L24 16 L18 18 L16 24 L14 18 L8 16 L14 14 Z' fill='%23E8A93C' fill-opacity='0.1'/><circle cx='48' cy='14' r='3' fill='%238A7565' fill-opacity='0.08'/><circle cx='52' cy='50' r='4' fill='%23D9A24B' fill-opacity='0.07'/>"
+  );
+  const PATTERN_LEAF = svgPattern(
+    "<path d='M32 10 C46 14 50 30 32 54 C14 30 18 14 32 10 Z' fill='%234C8C4A' fill-opacity='0.09'/><line x1='32' y1='16' x2='32' y2='48' stroke='%234C8C4A' stroke-opacity='0.12' stroke-width='1.4'/><circle cx='10' cy='50' r='4' fill='%2377B36B' fill-opacity='0.08'/>"
+  );
+  const PATTERN_PALETTE = svgPattern(
+    "<circle cx='13' cy='15' r='7' fill='%23E63946' fill-opacity='0.12'/><circle cx='31' cy='9' r='6' fill='%23F4A261' fill-opacity='0.12'/><circle cx='49' cy='17' r='7' fill='%232A9D8F' fill-opacity='0.12'/><circle cx='17' cy='39' r='6' fill='%23457B9D' fill-opacity='0.12'/><circle cx='39' cy='41' r='7' fill='%239B5DE5' fill-opacity='0.12'/><circle cx='55' cy='51' r='5' fill='%23E9C46A' fill-opacity='0.13'/><circle cx='7' cy='55' r='5' fill='%23F15BB5' fill-opacity='0.12'/><circle cx='24' cy='24' r='1.6' fill='%23E63946' fill-opacity='0.18'/><circle cx='44' cy='30' r='1.4' fill='%232A9D8F' fill-opacity='0.18'/><circle cx='30' cy='50' r='1.5' fill='%239B5DE5' fill-opacity='0.18'/>"
+  );
+  const PATTERN_KITCHEN = svgPattern(
+    "<rect x='2' y='2' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><rect x='16' y='2' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><rect x='9' y='9' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><rect x='2' y='16' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><path d='M40 14 a12 8 0 0 0 24 0 z' fill='%23D9622B' fill-opacity='0.1'/><path d='M46 2 q2 -5 0 -8 M52 2 q2 -5 0 -8' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='1.4' fill='none'/><path d='M16 40 L27 40 L21.5 51 Z' fill='%23E9C46A' fill-opacity='0.15'/><circle cx='21.5' cy='38' r='1.4' fill='%23D93B3B' fill-opacity='0.18'/><ellipse cx='48' cy='48' rx='8' ry='5.5' fill='%23C98B4A' fill-opacity='0.13'/><path d='M48 43 q3 -3 6 0' stroke='%238A5A2E' stroke-opacity='0.15' stroke-width='1.3' fill='none'/>"
+  );
+  const PATTERN_GLOW = svgPattern(
+    "<circle cx='32' cy='32' r='4.5' fill='%23E8A93C' fill-opacity='0.14'/><line x1='32' y1='12' x2='32' y2='20' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='32' y1='44' x2='32' y2='52' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='12' y1='32' x2='20' y2='32' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='44' y1='32' x2='52' y2='32' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='17' y1='17' x2='23' y2='23' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/><line x1='41' y1='41' x2='47' y2='47' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/><line x1='47' y1='17' x2='41' y2='23' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/><line x1='23' y1='41' x2='17' y2='47' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/>"
+  );
+  const PATTERN_SMILE = svgPattern(
+    "<circle cx='23' cy='23' r='2' fill='%23E8A93C' fill-opacity='0.16'/><circle cx='41' cy='23' r='2' fill='%23E8A93C' fill-opacity='0.16'/><path d='M18 33 Q32 47 46 33' stroke='%23E8A93C' stroke-opacity='0.16' stroke-width='2.4' fill='none' stroke-linecap='round'/><circle cx='56' cy='52' r='2' fill='%23D93B3B' fill-opacity='0.1'/><path d='M52 52 Q56 56 60 52' stroke='%23D93B3B' stroke-opacity='0.12' stroke-width='1.6' fill='none' stroke-linecap='round'/>"
+  );
+  const PATTERN_FLOWER = svgPattern(
+    "<g fill='%238A7565' fill-opacity='0.07'><circle cx='32' cy='24' r='6'/><circle cx='40' cy='32' r='6'/><circle cx='32' cy='40' r='6'/><circle cx='24' cy='32' r='6'/></g><circle cx='32' cy='32' r='5' fill='%23E8A93C' fill-opacity='0.12'/>"
+  );
+  const PATTERN_STAR = svgPattern(
+    "<path d='M32 12 L35.5 27.5 L50 32 L35.5 36.5 L32 52 L28.5 36.5 L14 32 L28.5 27.5 Z' fill='%23E8A93C' fill-opacity='0.1'/>"
+  );
+  const PATTERN_CONFETTI = svgPattern(
+    "<rect x='10' y='12' width='6' height='3' fill='%23D93B3B' fill-opacity='0.09' transform='rotate(20 13 13)'/><rect x='42' y='46' width='6' height='3' fill='%23E8A93C' fill-opacity='0.1' transform='rotate(-15 45 47)'/><circle cx='50' cy='16' r='2.5' fill='%23D93B3B' fill-opacity='0.09'/><circle cx='14' cy='48' r='2.5' fill='%23E8A93C' fill-opacity='0.09'/>"
+  );
+
+  const stepBackgrounds = [
+    "linear-gradient(160deg, #FFF9F1 0%, #FDEFD9 100%)",   // 0 welcome — warm gold shimmer, no hearts
+    "linear-gradient(135deg, #FDFBF7 0%, #EAF6FF 30%, #EAFBE4 60%, #FFF6E0 100%)", // 1 color — bright artist palette, no pink
+    "linear-gradient(160deg, #FFF3DD 0%, #F3D9B1 100%)",   // 2 food — warm kraft/kitchen tones
+    "linear-gradient(160deg, #E9F7EC 0%, #D3EFDA 100%)",   // 3 love meter (nature) — fresh green
+    "linear-gradient(160deg, #FFF7E8 0%, #FFE9C7 100%)",   // 4 what you like about me — warm glow
+    "linear-gradient(160deg, #E8F8F0 0%, #D6F0E6 100%)",   // 5 about you — fresh mint
+    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 6 one more question — soft gold
+    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 7 teaser — playful gold
+    "linear-gradient(160deg, #FFE9EC 0%, #FFC2CC 100%)",   // 8 final question — deep rose
+    "linear-gradient(160deg, #FFF0F0 0%, #FFD3D9 100%)"    // 9 thank you — celebratory red
+  ];
+
+  const stepPatterns = [
+    PATTERN_WELCOME,   // 0 welcome — sparkle & ribbon, not a heart
+    PATTERN_PALETTE,   // 1 color — paint splash palette
+    PATTERN_KITCHEN,   // 2 food — bowl, pizza, dumpling, tablecloth checks
+    PATTERN_LEAF,       // 3 love meter (nature) — leaves instead of hearts
+    PATTERN_GLOW,      // 4 what you like about me — warm glow, not a heart
+    PATTERN_FLOWER,      // 5 about you
+    PATTERN_SMILE,        // 6 one more question — smiley faces
+    PATTERN_STAR,        // 7 teaser
+    PATTERN_HEART,        // 8 final question
+    PATTERN_CONFETTI       // 9 thank you
+  ];
+
+  function setBackground(step){
+    const grad = stepBackgrounds[step] || stepBackgrounds[0];
+    const pattern = stepPatterns[step] || PATTERN_HEART;
+    document.getElementById('bgLayer').style.backgroundImage = pattern + ", " + grad;
   }
 
   function renderDots(){
@@ -202,6 +314,7 @@
     currentStep = step;
     document.getElementById('step'+currentStep).classList.remove('hidden');
     renderDots();
+    setBackground(step);
   }
 
   // ---- step 1: color ----
@@ -218,10 +331,32 @@
   function pickFood(btn, value){
     document.querySelectorAll('#foodOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
     btn.classList.add('picked');
-    state.food = value;
-    logChange('food', value);
-    document.getElementById('foodNext').disabled = false;
+    const customInput = document.getElementById('customFoodInput');
+    const foodNext = document.getElementById('foodNext');
+    if(value === 'Something else'){
+      customInput.classList.remove('hidden');
+      customInput.value = "";
+      customInput.focus();
+      state.food = "";
+      foodNext.disabled = true;
+    } else {
+      customInput.classList.add('hidden');
+      state.food = value;
+      logChange('food', value);
+      foodNext.disabled = false;
+    }
   }
+  document.getElementById('customFoodInput').addEventListener('input', function(e){
+    const val = e.target.value.trim();
+    state.food = val;
+    document.getElementById('foodNext').disabled = val.length === 0;
+  });
+  document.getElementById('foodNext').addEventListener('click', function(){
+    const customInput = document.getElementById('customFoodInput');
+    if(!customInput.classList.contains('hidden') && state.food){
+      logChange('food', state.food);
+    }
+  }, true);
 
   // ---- step 3: love percent ----
   function pickPercent(btn, value){
@@ -242,7 +377,27 @@
     goTo(5);
   }
 
-  // ---- step 5: teaser (just for fun, nothing recorded) ----
+  // ---- step 5: about you text ----
+  document.getElementById('aboutInput').addEventListener('input', function(e){
+    document.getElementById('aboutNext').disabled = e.target.value.trim().length === 0;
+  });
+  function saveAbout(){
+    state.about = document.getElementById('aboutInput').value.trim();
+    logChange('about', state.about);
+    goTo(6);
+  }
+
+  // ---- step 6: one more question ----
+  document.getElementById('smileInput').addEventListener('input', function(e){
+    document.getElementById('smileNext').disabled = e.target.value.trim().length === 0;
+  });
+  function saveSmile(){
+    state.smile = document.getElementById('smileInput').value.trim();
+    logChange('smile', state.smile);
+    goTo(7);
+  }
+
+  // ---- step 7: teaser (just for fun, nothing recorded) ----
   let teaserDodgeCount = 0;
   const teaserTaunts = ["Nice try 😄","That button's shy today","Almost! Try again 👀","It really doesn't want to be pressed","Okay this is just funny now"];
   function teaserDodge(){
@@ -261,12 +416,13 @@
     }
   }
   function teaserYes(){
-    goTo(6);
+    goTo(8);
   }
 
-  // ---- step 6: real final answer (pick, then tap Submit) ----
+  // ---- step 7: real final answer (pick, then tap Submit) ----
   function selectFinal(btn, value){
     document.getElementById('loveYesBtn').classList.remove('picked');
+    document.getElementById('loveMaybeBtn').classList.remove('picked');
     document.getElementById('loveNoBtn').classList.remove('picked');
     btn.classList.add('picked');
     state.finalAnswer = value;
@@ -274,6 +430,7 @@
   }
   function submitFinal(){
     document.getElementById('loveYesBtn').disabled = true;
+    document.getElementById('loveMaybeBtn').disabled = true;
     document.getElementById('loveNoBtn').disabled = true;
     document.getElementById('finalSubmitBtn').disabled = true;
     submitAnswers();
@@ -310,6 +467,10 @@
       love_percent_changes: history.percent.join(" → ") || "—",
       what_she_likes_final: state.likes,
       what_she_likes_changes: history.likes.join(" → ") || "—",
+      about_her_final: state.about,
+      about_her_changes: history.about.join(" → ") || "—",
+      what_makes_her_smile_final: state.smile,
+      what_makes_her_smile_changes: history.smile.join(" → ") || "—",
       timestamp: new Date().toISOString()
     };
 
@@ -325,12 +486,14 @@
       console.error("Could not send answers:", err);
     }
     document.getElementById('loveYesBtn').disabled = false;
+    document.getElementById('loveMaybeBtn').disabled = false;
     document.getElementById('loveNoBtn').disabled = false;
     document.getElementById('finalSubmitBtn').disabled = false;
-    goTo(7);
+    goTo(9);
   }
 
   renderDots();
+  setBackground(0);
 </script>
 
 </body>
