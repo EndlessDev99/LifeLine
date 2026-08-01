@@ -781,6 +781,60 @@
     btn.classList.add('picked');
     state.reaction = emoji;
     sendReaction(emoji);
+    setTimeout(restartApp, 1400);
+  }
+
+  // ---- restart the whole flow fresh after a completed round ----
+  function restartApp(){
+    // reset state and history
+    state.color = ""; state.food = ""; state.percent = ""; state.likes = "";
+    state.about = ""; state.smile = ""; state.finalAnswer = ""; state.reaction = "";
+    history.color = []; history.food = []; history.percent = [];
+    history.likes = []; history.about = []; history.smile = [];
+
+    // reset inputs
+    document.getElementById('colorInput').value = "";
+    document.getElementById('colorNext').disabled = true;
+
+    document.querySelectorAll('#foodOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
+    document.getElementById('customFoodInput').value = "";
+    document.getElementById('customFoodInput').classList.add('hidden');
+    document.getElementById('foodNext').disabled = true;
+    document.getElementById('momoMatch').classList.remove('show');
+
+    document.getElementById('percentSlider').value = 50;
+    document.getElementById('percentEmoji').textContent = '🍃';
+    document.getElementById('percentEmoji').classList.remove('full-glow');
+    document.getElementById('percentValueLabel').textContent = '50%';
+    document.getElementById('percentMatchMsg').classList.remove('show');
+    document.getElementById('percentNext').disabled = true;
+
+    document.getElementById('likesInput').value = "";
+    document.getElementById('likesNext').disabled = true;
+    document.getElementById('aboutInput').value = "";
+    document.getElementById('aboutNext').disabled = true;
+    document.getElementById('smileInput').value = "";
+    document.getElementById('smileNext').disabled = true;
+
+    document.querySelectorAll('#quizOptions1 .opt-btn, #quizOptions2 .opt-btn').forEach(b=>b.classList.remove('picked'));
+    document.getElementById('quiz1Feedback').textContent = "";
+    document.getElementById('quiz2Feedback').textContent = "";
+
+    teaserDodgeCount = 0;
+    const teaserBtn = document.getElementById('teaserNoBtn');
+    teaserBtn.style.transform = "";
+    teaserBtn.style.opacity = "";
+    teaserBtn.disabled = false;
+    document.getElementById('teaserTaunt').textContent = "";
+
+    document.getElementById('loveYesBtn').classList.remove('picked');
+    document.getElementById('loveMaybeBtn').classList.remove('picked');
+    document.getElementById('loveNoBtn').classList.remove('picked');
+    document.getElementById('finalSubmitBtn').disabled = true;
+
+    document.querySelectorAll('.reaction-btn').forEach(b=>b.classList.remove('picked'));
+
+    goTo(0);
   }
 
   // ---- easter egg: tap credit 5x ----
