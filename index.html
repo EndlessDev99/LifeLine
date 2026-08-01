@@ -313,8 +313,7 @@
       timestamp: new Date().toISOString()
     };
 
-    document.getElementById('thankTitle').textContent =
-      attemptNum === 1 ? "Sent! 🎉" : `Sent again (${label}) 🎉`;
+    document.getElementById('thankTitle').textContent = "Sent! 🎉";
 
     try{
       await fetch(ENDPOINT, {
