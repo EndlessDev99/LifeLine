@@ -13,7 +13,14 @@
     --soy:#3A2A20;
     --soy-soft:#8A7565;
     --gold:#E8A93C;
+    --card-bg: rgba(255,255,255,0.92);
     --shadow: 0 10px 30px rgba(58,42,32,0.12);
+  }
+  body.dark-theme{
+    --soy:#F5EDE3;
+    --soy-soft:#CBB9A8;
+    --card-bg: rgba(38,28,24,0.88);
+    --shadow: 0 10px 34px rgba(0,0,0,0.4);
   }
   *{box-sizing:border-box;}
   html,body{ height:100%; }
@@ -24,72 +31,203 @@
     padding:20px; color:var(--soy);
     position:relative;
     overflow-x:hidden;
+    transition: color .3s ease;
   }
   #bgLayer{
     position:fixed; inset:0; z-index:-1;
     background-repeat: repeat, no-repeat;
     background-size: 64px 64px, cover;
     transition: background 0.8s ease;
+    animation: drift 22s linear infinite;
   }
+  body.dark-theme #bgLayer{ filter: brightness(0.35) saturate(1.3); }
+  @keyframes drift{ from{ background-position: 0 0, 0 0; } to{ background-position: 64px 64px, 0 0; } }
+
+  #themeToggle{
+    position:fixed; top:16px; right:16px; z-index:50;
+    width:40px; height:40px; border-radius:50%;
+    border:2px solid #F0E3D3; background:rgba(255,255,255,0.85);
+    font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 12px rgba(58,42,32,0.15); transition:transform .15s ease;
+  }
+  #themeToggle:active{ transform:scale(.9) rotate(15deg); }
+  body.dark-theme #themeToggle{ background:rgba(60,45,38,0.85); border-color:#4A3A30; }
+
   .card{
-    background:rgba(255,255,255,0.92);
+    background:var(--card-bg);
     backdrop-filter: blur(6px);
     width:100%; max-width:420px;
     border-radius:28px; padding:34px 26px 30px; box-shadow:var(--shadow);
     position:relative; text-align:center;
     animation: pop 0.5s cubic-bezier(.2,1.4,.4,1);
+    transition: background .3s ease;
   }
   @keyframes pop{ from{transform:scale(.9); opacity:0;} to{transform:scale(1); opacity:1;} }
-  .progress{ display:flex; gap:5px; justify-content:center; margin-bottom:22px; flex-wrap:wrap; }
+
+  .progress{ display:flex; gap:5px; justify-content:center; margin-bottom:10px; flex-wrap:wrap; }
   .dot{ height:6px; width:16px; border-radius:4px; background:#F0E3D3; transition:background .3s; }
   .dot.active{ background:var(--chili); }
   .dot.done{ background:var(--gold); }
-  h1{ font-size:1.35rem; margin:0 0 6px; }
+
+  .love-bar-track{ height:5px; width:100%; background:#F0E3D3; border-radius:4px; margin-bottom:22px; overflow:hidden; }
+  .love-bar-fill{ height:100%; background:linear-gradient(90deg, var(--gold), var(--chili)); border-radius:4px; transition:width .5s ease; }
+
+  h1{ font-size:1.35rem; margin:0 0 6px; min-height:1.6em; }
+  .shimmer-text{
+    background: linear-gradient(90deg, var(--chili), var(--gold), var(--chili));
+    background-size: 200% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer{ to{ background-position: -200% center; } }
+
+  .rainbow-text{
+    background: linear-gradient(100deg, #E24B4A, #F09595, #ED93B1, #97C459, #639922, #85B7EB, #378ADD, #E24B4A);
+    background-size: 400% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    animation: rainbowShift 14s ease-in-out infinite;
+    display:inline-block;
+    letter-spacing:0.5px;
+  }
+  @keyframes rainbowShift{ to{ background-position: -400% center; } }
+
+  /* momos match animation */
+  .momo-match{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:10px; font-size:.95rem; font-weight:700; color:var(--chili-dark);
+    opacity:0; transform:translateY(6px) scale(.9);
+  }
+  .momo-match.show{ animation: momoPop .6s cubic-bezier(.2,1.4,.4,1) forwards; }
+  .momo-match .momo-emoji{ font-size:1.6rem; display:inline-block; }
+  .momo-match.show .momo-emoji{ animation: momoBounce 1s ease-in-out infinite .5s; }
+  @keyframes momoPop{
+    0%{ opacity:0; transform:translateY(6px) scale(.9); }
+    60%{ opacity:1; transform:translateY(-3px) scale(1.06); }
+    100%{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes momoBounce{
+    0%,100%{ transform:translateY(0) rotate(-4deg); }
+    50%{ transform:translateY(-6px) rotate(4deg); }
+  }
+
   p.sub{ color:var(--soy-soft); font-size:.95rem; margin:0 0 22px; line-height:1.55; }
   .highlight{ color:var(--chili); font-weight:700; }
   .note-line{ font-size:.92rem; color:var(--chili-dark); font-weight:600; margin:14px 0 4px; }
+
   .options{ display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
   .opt-btn{ border:2px solid #F0E3D3; background:#FFFCF6; padding:14px 16px; border-radius:16px; font-size:1rem; color:var(--soy); cursor:pointer; transition:all .15s; text-align:left; }
   .opt-btn:active{ transform:scale(.98); }
-  .opt-btn:hover{ border-color:var(--gold); background:#FFF8EA; }
+  .opt-btn:hover{ border-color:var(--gold); background:#FFF8EA; animation: wiggle .35s ease; }
   .opt-btn.picked{ border-color:var(--chili); background:#FFF1F1; font-weight:600; }
+  @keyframes wiggle{ 0%,100%{ transform:rotate(0); } 25%{ transform:rotate(-1.2deg); } 75%{ transform:rotate(1.2deg); } }
+  body.dark-theme .opt-btn{ background:rgba(255,255,255,0.05); color:var(--soy); border-color:#4A3A30; }
+  body.dark-theme .opt-btn:hover{ background:rgba(255,255,255,0.1); }
+
   .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px; }
   .opt-grid .opt-btn{ text-align:center; font-weight:700; }
-  input[type="text"]{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); }
+
+  .quiz-feedback{ font-size:.85rem; font-weight:600; min-height:20px; margin-top:6px; }
+
+  .recap-card{ text-align:left; background:#FFFCF6; border:2px solid #F0E3D3; border-radius:16px; padding:16px; margin-bottom:16px; font-size:.88rem; line-height:1.6; max-height:260px; overflow-y:auto; }
+  .recap-card b{ color:var(--chili-dark); }
+  body.dark-theme .recap-card{ background:rgba(255,255,255,0.05); border-color:#4A3A30; }
+
+  input[type="text"]{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); background:transparent; }
   input[type="text"]:focus{ outline:none; border-color:var(--gold); }
-  textarea{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); resize:vertical; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; }
+  textarea{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); resize:vertical; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; background:transparent; }
   textarea:focus{ outline:none; border-color:var(--gold); }
+
+  input[type="range"]{ width:100%; margin:10px 0 4px; accent-color:var(--chili); }
+  .slider-readout{ font-size:2rem; margin-bottom:4px; transition:transform .3s ease; }
+  .slider-readout.full-glow{
+    animation: fullGlowPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes fullGlowPulse{
+    0%,100%{ transform:scale(1); text-shadow:0 0 10px rgba(232,169,60,0.35); }
+    50%{ transform:scale(1.18); text-shadow:0 0 22px rgba(232,169,60,0.65); }
+  }
+  .percent-match-msg{
+    font-size:.88rem; font-weight:700; color:var(--gold); margin:2px 0 14px;
+    opacity:0; transform:translateY(4px);
+  }
+  .percent-match-msg.show{ animation: matchMsgIn .5s ease forwards; }
+  @keyframes matchMsgIn{ to{ opacity:1; transform:translateY(0); } }
+  .slider-label{ font-size:.85rem; color:var(--soy-soft); margin-bottom:18px; }
+
   .nav-row{ display:flex; gap:10px; margin-top:18px; }
   .btn{ flex:1; padding:14px; border-radius:16px; border:none; font-size:1rem; font-weight:600; cursor:pointer; transition:transform .12s, box-shadow .12s; }
   .btn:active{ transform:scale(.97); }
   .btn-primary{ background:var(--chili); color:#fff; box-shadow:0 6px 16px rgba(217,59,59,.35); }
   .btn-primary:disabled{ background:#F0D8D8; color:#fff; box-shadow:none; cursor:not-allowed; }
   .btn-ghost{ background:transparent; color:var(--soy-soft); border:2px solid #F0E3D3; }
+
   .yesno{ position:relative; min-height:180px; }
   .yesno .row{ display:flex; gap:14px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
   .dodge-btn{ background:#FFFCF6; border:2px solid #F0E3D3; color:var(--soy); padding:16px 22px; border-radius:18px; font-size:1rem; transition:transform .18s ease; cursor:pointer; }
   .fixed-btn{ background:var(--chili); color:#fff; border:none; padding:16px 22px; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:0 8px 20px rgba(217,59,59,.35); }
   .taunt{ font-size:.85rem; color:var(--soy-soft); margin-top:14px; min-height:18px; }
+
   .final-emoji{ font-size:3rem; margin-bottom:6px; text-align:center; }
   .hidden{ display:none !important; }
   .footnote{ margin-top:18px; font-size:.75rem; color:#CBB9A3; text-align:center; }
-  .credit{ margin-top:4px; font-size:.68rem; color:#DCC9B4; text-align:center; letter-spacing:.2px; }
+  .credit{ margin-top:4px; font-size:.68rem; color:#DCC9B4; text-align:center; letter-spacing:.2px; cursor:default; user-select:none; }
+  .secret-msg{ margin-top:10px; font-size:.72rem; color:var(--chili-dark); text-align:center; font-weight:600; }
+
   .final-options{ display:flex; flex-direction:column; gap:12px; }
-  .final-options button{ width:100%; padding:16px; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; border:2px solid #F0E3D3; background:#FFFCF6; color:var(--soy); transition:all .15s; }
+  .final-options button{ width:100%; padding:14px 12px; border-radius:18px; font-size:.85rem; line-height:1.3; font-weight:700; cursor:pointer; border:2px solid #F0E3D3; background:#FFFCF6; color:var(--soy); transition:all .15s; }
   .final-options button.picked{ background:var(--chili); color:#fff; border:none; box-shadow:0 8px 20px rgba(217,59,59,.35); }
+  @media (max-width:360px){
+    .final-options button{ font-size:.78rem; padding:12px 10px; }
+  }
+
+  /* step slide transitions */
+  .step.enter-right{ animation: slideInRight .35s ease; }
+  .step.enter-left{ animation: slideInLeft .35s ease; }
+  @keyframes slideInRight{ from{ opacity:0; transform:translateX(26px);} to{ opacity:1; transform:translateX(0);} }
+  @keyframes slideInLeft{ from{ opacity:0; transform:translateX(-26px);} to{ opacity:1; transform:translateX(0);} }
+
+  /* loading overlay */
+  #calcOverlay{
+    position:fixed; inset:0; background:rgba(58,42,32,0.55); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center; z-index:100;
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  #calcOverlay.show{ opacity:1; pointer-events:auto; }
+  .calc-box{ background:#FFFCF6; border-radius:20px; padding:28px 32px; text-align:center; box-shadow:0 12px 30px rgba(0,0,0,.3); }
+  .spinner{ width:36px; height:36px; border:4px solid #F0E3D3; border-top-color:var(--chili); border-radius:50%; margin:0 auto 12px; animation:spin .8s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .calc-box p{ margin:0; font-weight:600; color:var(--soy); font-size:.95rem; }
+
+  /* tap to reveal */
+  .reveal-veil{ background:linear-gradient(160deg,#FFF3E0,#FFE0D0); border:2px dashed var(--gold); border-radius:20px; padding:34px 20px; cursor:pointer; transition:transform .15s ease; }
+  .reveal-veil:active{ transform:scale(.97); }
+  .reveal-veil .rv-icon{ font-size:2.4rem; margin-bottom:8px; }
+  .reveal-content{ animation: pop .4s cubic-bezier(.2,1.4,.4,1); }
+
+  /* emoji reaction bar */
+  .reaction-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .reaction-btn{ font-size:1.4rem; background:#FFFCF6; border:2px solid #F0E3D3; border-radius:14px; padding:8px 12px; cursor:pointer; transition:transform .15s ease; }
+  .reaction-btn:active, .reaction-btn.picked{ transform:scale(1.2); border-color:var(--gold); }
+
+  /* confetti */
+  .confetti-piece{ position:fixed; top:-40px; z-index:9999; pointer-events:none; animation-name:confettiFall; animation-timing-function:ease-in; animation-fill-mode:forwards; }
+  @keyframes confettiFall{ from{ opacity:1; } to{ transform:translateY(112vh) rotate(360deg); opacity:0; } }
 </style>
 </head>
 <body>
 
 <div id="bgLayer"></div>
+<button id="themeToggle" onclick="toggleTheme()" title="Switch theme">🌙</button>
+<div id="calcOverlay"><div class="calc-box"><div class="spinner"></div><p id="calcText">Calculating results... 💭</p></div></div>
 
 <div class="card">
   <div class="progress" id="progressDots"></div>
+  <div class="love-bar-track"><div class="love-bar-fill" id="loveBarFill" style="width:0%"></div></div>
 
   <!-- 0: welcome -->
   <div class="step" id="step0">
-    <h1>Hey Aqsa Asif</h1>
-    <p class="sub">Just a few quick questions—read them carefully, take your time, and answer honestly! 😊</p>
+    <h1 id="welcomeHeading">Hey <span class="rainbow-text">Aqsa Asif</span></h1>
+    <p class="sub" id="welcomeSub"></p>
     <div class="nav-row"><button class="btn btn-primary" onclick="goTo(1)">Let's go →</button></div>
   </div>
 
@@ -110,31 +248,30 @@
     <p class="sub">What's your favorite food?</p>
     <div class="options" id="foodOptions">
       <button class="opt-btn" onclick="pickFood(this,'Momos 🥟')">Momos 🥟</button>
-      <button class="opt-btn" onclick="pickFood(this,'Biryani')">Biryani</button>
-      <button class="opt-btn" onclick="pickFood(this,'Pizza')">Pizza</button>
-      <button class="opt-btn" onclick="pickFood(this,'Something else')">Something else</button>
+      <button class="opt-btn" onclick="pickFood(this,'Biryani 🍛')">Biryani 🍛</button>
+      <button class="opt-btn" onclick="pickFood(this,'Pizza 🍕')">Pizza 🍕</button>
+      <button class="opt-btn" onclick="pickFood(this,'Something else')">Something else 🍽️</button>
     </div>
     <input type="text" id="customFoodInput" placeholder="Type your favorite food..." class="hidden" style="margin-top:4px;">
     <p class="note-line">Armaghan's Favorite is Momos 🥟</p>
+    <div class="momo-match" id="momoMatch"><span class="momo-emoji">🥟</span><span>It's a match! Armaghan loves momos too</span><span class="momo-emoji">🥟</span></div>
     <div class="nav-row">
       <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
       <button class="btn btn-primary" id="foodNext" onclick="goTo(3)" disabled>Next →</button>
     </div>
   </div>
 
-  <!-- 3: love meter -->
+  <!-- 3: love meter (slider) -->
   <div class="step hidden" id="step3">
     <h1>Be honest 🌿</h1>
     <p class="sub">How much do you like Armaghan Danish's nature?</p>
-    <div class="opt-grid" id="percentOptions">
-      <button class="opt-btn" onclick="pickPercent(this,'10%')">🌱 10%</button>
-      <button class="opt-btn" onclick="pickPercent(this,'50%')">🍃 50%</button>
-      <button class="opt-btn" onclick="pickPercent(this,'70%')">🌿 70%</button>
-      <button class="opt-btn" onclick="pickPercent(this,'100%')">🌸 100%</button>
-    </div>
+    <div class="slider-readout" id="percentEmoji">🍃</div>
+    <input type="range" min="0" max="100" value="50" id="percentSlider">
+    <div class="slider-label"><span id="percentValueLabel">50%</span></div>
+    <p class="percent-match-msg" id="percentMatchMsg">Full bloom! Perfect match 🌟</p>
     <div class="nav-row">
       <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
-      <button class="btn btn-primary" id="percentNext" onclick="goTo(4)" disabled>Next →</button>
+      <button class="btn btn-primary" id="percentNext" onclick="savePercent()" disabled>Next →</button>
     </div>
   </div>
 
@@ -171,8 +308,42 @@
     </div>
   </div>
 
-  <!-- 7: teaser (not recorded, just for fun) -->
-  <div class="step hidden yesno" id="step7">
+  <!-- 7: mini quiz, just for fun -->
+  <div class="step hidden" id="step7">
+    <h1>Quick quiz 🧠</h1>
+    <p class="sub">Let's see how well you know him... (just for fun, no pressure!)</p>
+    <p class="note-line" style="margin-top:0;">Q1. What's Armaghan's favorite food?</p>
+    <div class="options" id="quizOptions1">
+      <button class="opt-btn" onclick="answerQuiz1(this,false)">Pizza 🍕</button>
+      <button class="opt-btn" onclick="answerQuiz1(this,true)">Momos 🥟</button>
+      <button class="opt-btn" onclick="answerQuiz1(this,false)">Biryani 🍛</button>
+    </div>
+    <p class="quiz-feedback" id="quiz1Feedback"></p>
+    <p class="note-line">Q2. True or False: You just smiled reading this 😄</p>
+    <div class="options" id="quizOptions2">
+      <button class="opt-btn" onclick="answerQuiz2(this)">True</button>
+      <button class="opt-btn" onclick="answerQuiz2(this)">False</button>
+    </div>
+    <p class="quiz-feedback" id="quiz2Feedback"></p>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(6)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(8)">Next →</button>
+    </div>
+  </div>
+
+  <!-- 8: recap -->
+  <div class="step hidden" id="step8">
+    <h1>Here's what you shared 💌</h1>
+    <p class="sub">Quick look before we go on — you can still go back and change anything.</p>
+    <div class="recap-card" id="recapCard"></div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(7)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(9)">Looks good →</button>
+    </div>
+  </div>
+
+  <!-- 9: teaser (not recorded, just for fun) -->
+  <div class="step hidden yesno" id="step9">
     <h1>Real quick... 👀</h1>
     <p class="sub">Do you love Armaghan?</p>
     <div class="row">
@@ -181,12 +352,12 @@
     </div>
     <p class="taunt" id="teaserTaunt"></p>
     <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(6)">← Back</button>
+      <button class="btn btn-ghost" onclick="goTo(8)">← Back</button>
     </div>
   </div>
 
-  <!-- 8: real final question -->
-  <div class="step hidden" id="step8">
+  <!-- 10: real final question -->
+  <div class="step hidden" id="step10">
     <h1>Okay, for real this time ❤️</h1>
     <p class="sub">Aqsa, do you love Armaghan Danish?</p>
     <div class="final-options">
@@ -195,21 +366,34 @@
       <button id="loveNoBtn" onclick="selectFinal(this,&quot;No, I don't love Armaghan Danish&quot;)">No, I don't love Armaghan Danish</button>
     </div>
     <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(7)">← Back</button>
+      <button class="btn btn-ghost" onclick="goTo(9)">← Back</button>
       <button class="btn btn-primary" id="finalSubmitBtn" onclick="submitFinal()" disabled>Submit answer</button>
     </div>
   </div>
 
-  <!-- 9: thank you -->
-  <div class="step hidden" id="step9">
-    <div class="final-emoji">❤️</div>
-    <h1 id="thankTitle">Sent!</h1>
-    <p class="sub">Thank you for submitting your views ❤️</p>
-    <div class="nav-row"><button class="btn btn-ghost" onclick="goTo(8)">← Change my answer</button></div>
+  <!-- 11: thank you (tap to reveal) -->
+  <div class="step hidden" id="step11">
+    <div id="revealVeil" class="reveal-veil" onclick="revealThankYou()">
+      <div class="rv-icon">🎁</div>
+      <p class="sub" style="margin-bottom:0;">Tap to see it land ✨</p>
+    </div>
+    <div id="revealContent" class="hidden reveal-content">
+      <div class="final-emoji">🎉</div>
+      <h1 id="thankTitle">Sent!</h1>
+      <p class="sub">Thank you for submitting your views ❤️</p>
+      <div class="reaction-bar" id="reactionBar">
+        <button class="reaction-btn" onclick="pickReaction(this,'😊')">😊</button>
+        <button class="reaction-btn" onclick="pickReaction(this,'🥰')">🥰</button>
+        <button class="reaction-btn" onclick="pickReaction(this,'😂')">😂</button>
+        <button class="reaction-btn" onclick="pickReaction(this,'💛')">💛</button>
+      </div>
+      <div class="nav-row"><button class="btn btn-ghost" onclick="goTo(10)">← Change my answer</button></div>
+    </div>
   </div>
 
   <div class="footnote">made with ❤️ for you</div>
-  <div class="credit">App Developed by Armaghan Danish 😂</div>
+  <div class="credit" id="creditLine" onclick="tapCredit()">App Developed by Armaghan Danish 😂</div>
+  <p class="secret-msg hidden" id="secretMsg">🤫 psst... this took way too many late nights to build. hope it made you smile.</p>
 </div>
 
 <script>
@@ -218,9 +402,10 @@
   const ENDPOINT = "https://formsubmit.co/ajax/" + NOTIFY_EMAIL;
 
   let currentStep = 0;
-  const totalSteps = 10;
+  const totalSteps = 12;
+  let lastSubmissionLabel = "";
   const state = {
-    color: "", food: "", percent: "", likes: "", about: "", smile: "", finalAnswer: ""
+    color: "", food: "", percent: "", likes: "", about: "", smile: "", finalAnswer: "", reaction: ""
   };
   const history = { color: [], food: [], percent: [], likes: [], about: [], smile: [] };
 
@@ -229,6 +414,12 @@
     if(arr.length === 0 || arr[arr.length-1] !== value){
       arr.push(value);
     }
+  }
+
+  // ---- theme toggle ----
+  function toggleTheme(){
+    document.body.classList.toggle('dark-theme');
+    document.getElementById('themeToggle').textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
   }
 
   // ---- decorative themed patterns (self-contained SVG "images", no external files needed) ----
@@ -268,29 +459,24 @@
   );
 
   const stepBackgrounds = [
-    "linear-gradient(160deg, #FFF9F1 0%, #FDEFD9 100%)",   // 0 welcome — warm gold shimmer, no hearts
-    "linear-gradient(135deg, #FDFBF7 0%, #EAF6FF 30%, #EAFBE4 60%, #FFF6E0 100%)", // 1 color — bright artist palette, no pink
-    "linear-gradient(160deg, #FFF3DD 0%, #F3D9B1 100%)",   // 2 food — warm kraft/kitchen tones
-    "linear-gradient(160deg, #E9F7EC 0%, #D3EFDA 100%)",   // 3 love meter (nature) — fresh green
-    "linear-gradient(160deg, #FFF7E8 0%, #FFE9C7 100%)",   // 4 what you like about me — warm glow
-    "linear-gradient(160deg, #E8F8F0 0%, #D6F0E6 100%)",   // 5 about you — fresh mint
-    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 6 one more question — soft gold
-    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 7 teaser — playful gold
-    "linear-gradient(160deg, #FFE9EC 0%, #FFC2CC 100%)",   // 8 final question — deep rose
-    "linear-gradient(160deg, #FFF0F0 0%, #FFD3D9 100%)"    // 9 thank you — celebratory red
+    "linear-gradient(160deg, #FFF9F1 0%, #FDEFD9 100%)",   // 0 welcome
+    "linear-gradient(135deg, #FDFBF7 0%, #EAF6FF 30%, #EAFBE4 60%, #FFF6E0 100%)", // 1 color
+    "linear-gradient(160deg, #FFF3DD 0%, #F3D9B1 100%)",   // 2 food
+    "linear-gradient(160deg, #E9F7EC 0%, #D3EFDA 100%)",   // 3 love meter (nature)
+    "linear-gradient(160deg, #FFF7E8 0%, #FFE9C7 100%)",   // 4 what you like about me
+    "linear-gradient(160deg, #E8F8F0 0%, #D6F0E6 100%)",   // 5 about you
+    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 6 smile question
+    "linear-gradient(160deg, #FFF3E8 0%, #FFE0C2 100%)",   // 7 quiz
+    "linear-gradient(160deg, #FDF6EE 0%, #F6E6D8 100%)",   // 8 recap
+    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 9 teaser
+    "linear-gradient(160deg, #FFE9EC 0%, #FFC2CC 100%)",   // 10 final question
+    "linear-gradient(160deg, #FFF0F0 0%, #FFD3D9 100%)"    // 11 thank you
   ];
 
   const stepPatterns = [
-    PATTERN_WELCOME,   // 0 welcome — sparkle & ribbon, not a heart
-    PATTERN_PALETTE,   // 1 color — paint splash palette
-    PATTERN_KITCHEN,   // 2 food — bowl, pizza, dumpling, tablecloth checks
-    PATTERN_LEAF,       // 3 love meter (nature) — leaves instead of hearts
-    PATTERN_GLOW,      // 4 what you like about me — warm glow, not a heart
-    PATTERN_FLOWER,      // 5 about you
-    PATTERN_SMILE,        // 6 one more question — smiley faces
-    PATTERN_STAR,        // 7 teaser
-    PATTERN_HEART,        // 8 final question
-    PATTERN_CONFETTI       // 9 thank you
+    PATTERN_WELCOME, PATTERN_PALETTE, PATTERN_KITCHEN, PATTERN_LEAF, PATTERN_GLOW,
+    PATTERN_FLOWER, PATTERN_SMILE, PATTERN_STAR, PATTERN_FLOWER, PATTERN_STAR,
+    PATTERN_HEART, PATTERN_CONFETTI
   ];
 
   function setBackground(step){
@@ -307,14 +493,62 @@
       d.className = 'dot' + (i===currentStep ? ' active' : i<currentStep ? ' done' : '');
       wrap.appendChild(d);
     }
+    document.getElementById('loveBarFill').style.width = Math.round((currentStep/(totalSteps-1))*100) + "%";
+  }
+
+  // ---- typewriter effect for headings ----
+  function typeHeading(el){
+    const finalHTML = el.getAttribute('data-original') || el.innerHTML;
+    el.setAttribute('data-original', finalHTML);
+    const text = el.textContent;
+    el.textContent = "";
+    let i = 0;
+    const speed = Math.max(14, Math.min(30, 400/text.length));
+    (function tick(){
+      if(i <= text.length){
+        el.textContent = text.slice(0,i);
+        i++;
+        setTimeout(tick, speed);
+      } else {
+        el.innerHTML = finalHTML;
+      }
+    })();
   }
 
   function goTo(step){
-    document.getElementById('step'+currentStep).classList.add('hidden');
+    const oldStepEl = document.getElementById('step'+currentStep);
+    oldStepEl.classList.add('hidden');
+    oldStepEl.classList.remove('enter-right','enter-left');
+    const direction = step > currentStep ? 'enter-right' : 'enter-left';
     currentStep = step;
-    document.getElementById('step'+currentStep).classList.remove('hidden');
+    const newStepEl = document.getElementById('step'+currentStep);
+    newStepEl.classList.remove('hidden');
+    newStepEl.classList.add(direction);
+    setTimeout(()=>newStepEl.classList.remove(direction), 400);
     renderDots();
     setBackground(step);
+
+    if(step === 8){ renderRecap(); }
+
+    const h1 = newStepEl.querySelector('h1');
+    if(h1 && !h1.querySelector('.shimmer-text') && !h1.querySelector('.rainbow-text')){ typeHeading(h1); }
+  }
+
+  // ---- confetti ----
+  function spawnConfetti(emojis, count){
+    for(let i=0;i<count;i++){
+      const piece = document.createElement('span');
+      piece.className = 'confetti-piece';
+      piece.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      piece.style.left = (Math.random()*100) + "vw";
+      piece.style.fontSize = (1.1 + Math.random()*1.3) + "rem";
+      const duration = 2.2 + Math.random()*1.6;
+      const delay = Math.random()*0.5;
+      piece.style.animationDuration = duration + "s";
+      piece.style.animationDelay = delay + "s";
+      document.body.appendChild(piece);
+      setTimeout(()=>piece.remove(), (duration+delay)*1000 + 200);
+    }
   }
 
   // ---- step 1: color ----
@@ -333,23 +567,34 @@
     btn.classList.add('picked');
     const customInput = document.getElementById('customFoodInput');
     const foodNext = document.getElementById('foodNext');
+    const momoMatch = document.getElementById('momoMatch');
     if(value === 'Something else'){
       customInput.classList.remove('hidden');
       customInput.value = "";
       customInput.focus();
       state.food = "";
       foodNext.disabled = true;
+      momoMatch.classList.remove('show');
     } else {
       customInput.classList.add('hidden');
       state.food = value;
       logChange('food', value);
       foodNext.disabled = false;
+      if(value.indexOf('Momos') === 0){
+        momoMatch.classList.remove('show');
+        void momoMatch.offsetWidth; // restart animation
+        momoMatch.classList.add('show');
+        spawnConfetti(['🥟','💛'], 12);
+      } else {
+        momoMatch.classList.remove('show');
+      }
     }
   }
   document.getElementById('customFoodInput').addEventListener('input', function(e){
     const val = e.target.value.trim();
     state.food = val;
     document.getElementById('foodNext').disabled = val.length === 0;
+    document.getElementById('momoMatch').classList.remove('show');
   });
   document.getElementById('foodNext').addEventListener('click', function(){
     const customInput = document.getElementById('customFoodInput');
@@ -358,13 +603,42 @@
     }
   }, true);
 
-  // ---- step 3: love percent ----
-  function pickPercent(btn, value){
-    document.querySelectorAll('#percentOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
-    btn.classList.add('picked');
-    state.percent = value;
-    logChange('percent', value);
+  // ---- step 3: love percent slider ----
+  const percentSlider = document.getElementById('percentSlider');
+  const percentEmoji = document.getElementById('percentEmoji');
+  const percentValueLabel = document.getElementById('percentValueLabel');
+  const percentMatchMsg = document.getElementById('percentMatchMsg');
+  let hit100Before = false;
+  function emojiForPercent(v){
+    if(v < 30) return '🌱';
+    if(v < 60) return '🍃';
+    if(v < 90) return '🌿';
+    if(v < 100) return '🌸';
+    return '🌟';
+  }
+  percentSlider.addEventListener('input', function(e){
+    const v = Number(e.target.value);
+    percentEmoji.textContent = emojiForPercent(v);
+    percentValueLabel.textContent = v + "%";
     document.getElementById('percentNext').disabled = false;
+
+    if(v === 100){
+      percentEmoji.classList.add('full-glow');
+      percentMatchMsg.classList.add('show');
+      if(!hit100Before){
+        hit100Before = true;
+        spawnConfetti(['🌟','✨','💫'], 18);
+      }
+    } else {
+      percentEmoji.classList.remove('full-glow');
+      percentMatchMsg.classList.remove('show');
+      hit100Before = false;
+    }
+  });
+  function savePercent(){
+    state.percent = percentSlider.value + "%";
+    logChange('percent', state.percent);
+    goTo(4);
   }
 
   // ---- step 4: likes text ----
@@ -387,7 +661,7 @@
     goTo(6);
   }
 
-  // ---- step 6: one more question ----
+  // ---- step 6: smile question ----
   document.getElementById('smileInput').addEventListener('input', function(e){
     document.getElementById('smileNext').disabled = e.target.value.trim().length === 0;
   });
@@ -397,7 +671,37 @@
     goTo(7);
   }
 
-  // ---- step 7: teaser (just for fun, nothing recorded) ----
+  // ---- step 7: mini quiz (just for fun, nothing saved) ----
+  function answerQuiz1(btn, correct){
+    document.querySelectorAll('#quizOptions1 .opt-btn').forEach(b=>b.classList.remove('picked'));
+    btn.classList.add('picked');
+    document.getElementById('quiz1Feedback').textContent = "Noted 😊";
+    document.getElementById('quiz1Feedback').style.color = 'var(--chili-dark)';
+  }
+  function answerQuiz2(btn){
+    document.querySelectorAll('#quizOptions2 .opt-btn').forEach(b=>b.classList.remove('picked'));
+    btn.classList.add('picked');
+    document.getElementById('quiz2Feedback').textContent = "😄 Called it!";
+    document.getElementById('quiz2Feedback').style.color = 'var(--chili-dark)';
+  }
+
+  // ---- step 8: recap ----
+  function shorten(text, max){
+    if(!text) return "—";
+    return text.length > max ? text.slice(0,max).trim() + "…" : text;
+  }
+  function renderRecap(){
+    const el = document.getElementById('recapCard');
+    el.innerHTML =
+      "<div><b>Favorite color:</b> " + (state.color || "—") + "</div>" +
+      "<div style='margin-top:8px;'><b>Favorite food:</b> " + (state.food || "—") + "</div>" +
+      "<div style='margin-top:8px;'><b>Love meter:</b> " + (state.percent || "—") + "</div>" +
+      "<div style='margin-top:8px;'><b>What you like about me:</b> " + shorten(state.likes, 90) + "</div>" +
+      "<div style='margin-top:8px;'><b>About you:</b> " + shorten(state.about, 90) + "</div>" +
+      "<div style='margin-top:8px;'><b>What makes you smile:</b> " + shorten(state.smile, 90) + "</div>";
+  }
+
+  // ---- step 9: teaser (just for fun, nothing recorded) ----
   let teaserDodgeCount = 0;
   const teaserTaunts = ["Nice try 😄","That button's shy today","Almost! Try again 👀","It really doesn't want to be pressed","Okay this is just funny now"];
   function teaserDodge(){
@@ -416,10 +720,10 @@
     }
   }
   function teaserYes(){
-    goTo(8);
+    goTo(10);
   }
 
-  // ---- step 7: real final answer (pick, then tap Submit) ----
+  // ---- step 10: real final answer (pick, then tap Submit) ----
   function selectFinal(btn, value){
     document.getElementById('loveYesBtn').classList.remove('picked');
     document.getElementById('loveMaybeBtn').classList.remove('picked');
@@ -427,19 +731,73 @@
     btn.classList.add('picked');
     state.finalAnswer = value;
     document.getElementById('finalSubmitBtn').disabled = false;
+    if(value.indexOf('Yes') === 0){
+      spawnConfetti(['❤️','✨'], 10);
+    }
   }
   function submitFinal(){
     document.getElementById('loveYesBtn').disabled = true;
     document.getElementById('loveMaybeBtn').disabled = true;
     document.getElementById('loveNoBtn').disabled = true;
     document.getElementById('finalSubmitBtn').disabled = true;
-    submitAnswers();
+    const overlay = document.getElementById('calcOverlay');
+    overlay.classList.add('show');
+    const calcMessages = ["Calculating results... 💭","Double-checking everything... 🔍","Almost done... ✨"];
+    let mi = 0;
+    const calcText = document.getElementById('calcText');
+    calcText.textContent = calcMessages[0];
+    const calcInterval = setInterval(()=>{
+      mi = (mi+1) % calcMessages.length;
+      calcText.textContent = calcMessages[mi];
+    }, 700);
+
+    const minDelay = new Promise(res => setTimeout(res, 1600));
+    Promise.all([submitAnswers(), minDelay]).then(()=>{
+      clearInterval(calcInterval);
+      overlay.classList.remove('show');
+      document.getElementById('loveYesBtn').disabled = false;
+      document.getElementById('loveMaybeBtn').disabled = false;
+      document.getElementById('loveNoBtn').disabled = false;
+      document.getElementById('finalSubmitBtn').disabled = false;
+      // reset reveal veil for a fresh reveal each time
+      document.getElementById('revealVeil').classList.remove('hidden');
+      document.getElementById('revealContent').classList.add('hidden');
+      goTo(11);
+    });
+  }
+
+  // ---- step 11: tap to reveal + reactions ----
+  function revealThankYou(){
+    document.getElementById('revealVeil').classList.add('hidden');
+    document.getElementById('revealContent').classList.remove('hidden');
+    if(state.finalAnswer.indexOf('Yes') === 0){
+      spawnConfetti(['❤️','💛','✨','🎉'], 26);
+    } else if(state.finalAnswer.indexOf('Maybe') === 0){
+      spawnConfetti(['💛','✨'], 16);
+    }
+  }
+  function pickReaction(btn, emoji){
+    document.querySelectorAll('.reaction-btn').forEach(b=>b.classList.remove('picked'));
+    btn.classList.add('picked');
+    state.reaction = emoji;
+    sendReaction(emoji);
+  }
+
+  // ---- easter egg: tap credit 5x ----
+  let creditTapCount = 0;
+  function tapCredit(){
+    creditTapCount++;
+    if(creditTapCount === 5){
+      document.getElementById('secretMsg').classList.remove('hidden');
+    }
   }
 
   // ---- attempt tracking (per browser) ----
+  function peekAttemptNumber(){
+    return parseInt(localStorage.getItem('armaghan_attempt_count') || "0", 10);
+  }
   function getAttemptNumber(){
-    let n = parseInt(localStorage.getItem('armaghan_attempt_count') || "0", 10);
-    n += 1;
+    let n = peekAttemptNumber() + 1;
     localStorage.setItem('armaghan_attempt_count', n);
     return n;
   }
@@ -453,6 +811,7 @@
   async function submitAnswers(){
     const attemptNum = getAttemptNumber();
     const label = ordinalLabel(attemptNum);
+    lastSubmissionLabel = label;
 
     const payload = {
       _subject: `Aqsa's answers — ${label}`,
@@ -485,12 +844,53 @@
     }catch(err){
       console.error("Could not send answers:", err);
     }
-    document.getElementById('loveYesBtn').disabled = false;
-    document.getElementById('loveMaybeBtn').disabled = false;
-    document.getElementById('loveNoBtn').disabled = false;
-    document.getElementById('finalSubmitBtn').disabled = false;
-    goTo(9);
   }
+
+  async function sendReaction(emoji){
+    const payload = {
+      _subject: `Aqsa's reaction — ${lastSubmissionLabel || "?"}`,
+      _template: "table",
+      submission_label: lastSubmissionLabel || "—",
+      final_answer: state.finalAnswer,
+      reaction_emoji: emoji,
+      timestamp: new Date().toISOString()
+    };
+    try{
+      await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }catch(err){
+      console.error("Could not send reaction:", err);
+    }
+  }
+
+  // ---- initial welcome message (discreet, no numbers shown) ----
+  function typeText(el, text, onDone){
+    el.textContent = "";
+    let i = 0;
+    const speed = Math.max(12, Math.min(28, 500/text.length));
+    (function tick(){
+      if(i <= text.length){
+        el.textContent = text.slice(0,i);
+        i++;
+        setTimeout(tick, speed);
+      } else if(onDone){ onDone(); }
+    })();
+  }
+
+  (function initWelcome(){
+    const priorCount = peekAttemptNumber();
+    const seenBefore = priorCount > 0;
+
+    // subtitle lines (typed out)
+    const lines = seenBefore
+      ? ["Just a few quick questions—read them carefully, take your time, and answer honestly! 😊"]
+      : ["Just a few quick questions, read them carefully, take your time, and answer honestly! 😊"];
+    const chosenLine = lines[Math.floor(Math.random()*lines.length)];
+    typeText(document.getElementById('welcomeSub'), chosenLine);
+  })();
 
   renderDots();
   setBackground(0);
