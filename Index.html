@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>A Little Something 🥟</title>
+<style>
+  :root{
+    --steam-cream:#FFF6EA;
+    --dumpling:#FFFFFF;
+    --chili:#D93B3B;
+    --chili-dark:#B22B2B;
+    --soy:#3A2A20;
+    --soy-soft:#8A7565;
+    --gold:#E8A93C;
+    --shadow: 0 10px 30px rgba(58,42,32,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 10%, #FFE9C7 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, #FFD8D8 0%, transparent 50%),
+      var(--steam-cream);
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px; color:var(--soy);
+  }
+  .card{
+    background:var(--dumpling); width:100%; max-width:420px;
+    border-radius:28px; padding:34px 26px 30px; box-shadow:var(--shadow);
+    position:relative; text-align:center;
+    animation: pop 0.5s cubic-bezier(.2,1.4,.4,1);
+  }
+  @keyframes pop{ from{transform:scale(.9); opacity:0;} to{transform:scale(1); opacity:1;} }
+  .steam{ position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:28px; opacity:.85; animation: rise 3s ease-in-out infinite; }
+  @keyframes rise{ 0%,100%{transform:translate(-50%,0);opacity:.6;} 50%{transform:translate(-50%,-8px);opacity:1;} }
+  .progress{ display:flex; gap:5px; justify-content:center; margin-bottom:22px; flex-wrap:wrap; }
+  .dot{ height:6px; width:16px; border-radius:4px; background:#F0E3D3; transition:background .3s; }
+  .dot.active{ background:var(--chili); }
+  .dot.done{ background:var(--gold); }
+  h1{ font-size:1.35rem; margin:0 0 6px; }
+  p.sub{ color:var(--soy-soft); font-size:.95rem; margin:0 0 22px; line-height:1.55; }
+  .highlight{ color:var(--chili); font-weight:700; }
+  .options{ display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
+  .opt-btn{ border:2px solid #F0E3D3; background:#FFFCF6; padding:14px 16px; border-radius:16px; font-size:1rem; color:var(--soy); cursor:pointer; transition:all .15s; text-align:left; }
+  .opt-btn:active{ transform:scale(.98); }
+  .opt-btn:hover{ border-color:var(--gold); background:#FFF8EA; }
+  .opt-btn.picked{ border-color:var(--chili); background:#FFF1F1; font-weight:600; }
+  .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px; }
+  .opt-grid .opt-btn{ text-align:center; font-weight:700; }
+  input[type="text"]{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); }
+  input[type="text"]:focus{ outline:none; border-color:var(--gold); }
+  .nav-row{ display:flex; gap:10px; margin-top:18px; }
+  .btn{ flex:1; padding:14px; border-radius:16px; border:none; font-size:1rem; font-weight:600; cursor:pointer; transition:transform .12s, box-shadow .12s; }
+  .btn:active{ transform:scale(.97); }
+  .btn-primary{ background:var(--chili); color:#fff; box-shadow:0 6px 16px rgba(217,59,59,.35); }
+  .btn-primary:disabled{ background:#F0D8D8; color:#fff; box-shadow:none; cursor:not-allowed; }
+  .btn-ghost{ background:transparent; color:var(--soy-soft); border:2px solid #F0E3D3; }
+  .yesno{ position:relative; min-height:180px; }
+  .yesno .row{ display:flex; gap:14px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+  .dodge-btn{ background:#FFFCF6; border:2px solid #F0E3D3; color:var(--soy); padding:16px 22px; border-radius:18px; font-size:1rem; transition:transform .18s ease; cursor:pointer; }
+  .fixed-btn{ background:var(--chili); color:#fff; border:none; padding:16px 22px; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:0 8px 20px rgba(217,59,59,.35); }
+  .taunt{ font-size:.85rem; color:var(--soy-soft); margin-top:14px; min-height:18px; }
+  .final-emoji{ font-size:3rem; margin-bottom:6px; text-align:center; }
+  .hidden{ display:none !important; }
+  .footnote{ margin-top:18px; font-size:.75rem; color:#CBB9A3; text-align:center; }
+  .final-options{ display:flex; flex-direction:column; gap:12px; }
+  .final-options button{ width:100%; padding:16px; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; border:2px solid #F0E3D3; background:#FFFCF6; color:var(--soy); }
+  .final-options .love-btn{ background:var(--chili); color:#fff; border:none; box-shadow:0 8px 20px rgba(217,59,59,.35); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="steam">🥟</div>
+  <div class="progress" id="progressDots"></div>
+
+  <!-- 0: welcome -->
+  <div class="step" id="step0">
+    <h1>Hey Aqsa 👋</h1>
+    <p class="sub">Before I say anything embarrassing — answer a few quick things first. Takes a minute. Pinky promise.</p>
+    <div class="nav-row"><button class="btn btn-primary" onclick="goTo(1)">Let's go →</button></div>
+  </div>
+
+  <!-- 1: color -->
+  <div class="step hidden" id="step1">
+    <h1>Quick one 🎨</h1>
+    <p class="sub">What's your favorite color?</p>
+    <input type="text" id="colorInput" placeholder="Type it here...">
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(0)">← Back</button>
+      <button class="btn btn-primary" id="colorNext" onclick="saveColor()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- 2: food -->
+  <div class="step hidden" id="step2">
+    <h1>Okay, food time 🍜</h1>
+    <p class="sub">Pick your favorite:</p>
+    <div class="options" id="foodOptions">
+      <button class="opt-btn" onclick="pickFood(this,'Momos 🥟')">Momos 🥟</button>
+      <button class="opt-btn" onclick="pickFood(this,'Biryani')">Biryani</button>
+      <button class="opt-btn" onclick="pickFood(this,'Pizza')">Pizza</button>
+      <button class="opt-btn" onclick="pickFood(this,'Something else')">Something else</button>
+    </div>
+    <p class="sub" id="foodReply" style="min-height:20px;"></p>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" id="foodNext" onclick="goTo(3)" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- 3: fun fact -->
+  <div class="step hidden" id="step3">
+    <div class="final-emoji">🥟💛</div>
+    <h1>Fun fact</h1>
+    <p class="sub"><span class="highlight">Armaghan Danish</span> likes Momos the most. Every single time.</p>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- 4: love meter -->
+  <div class="step hidden" id="step4">
+    <h1>Be honest 📊</h1>
+    <p class="sub">How much do you like Armaghan Danish's nature?</p>
+    <div class="opt-grid" id="percentOptions">
+      <button class="opt-btn" onclick="pickPercent(this,'10%')">10%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'50%')">50%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'70%')">70%</button>
+      <button class="opt-btn" onclick="pickPercent(this,'100%')">100%</button>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
+      <button class="btn btn-primary" id="percentNext" onclick="goTo(5)" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- 5: what do you like about him -->
+  <div class="step hidden" id="step5">
+    <h1>One more 💭</h1>
+    <p class="sub">What's one thing you like about him?</p>
+    <input type="text" id="likesInput" placeholder="Write anything...">
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(4)">← Back</button>
+      <button class="btn btn-primary" id="likesNext" onclick="saveLikes()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- 6: teaser (not recorded, just for fun) -->
+  <div class="step hidden yesno" id="step6">
+    <h1>Real quick... 👀</h1>
+    <p class="sub">Do you love Armaghan?</p>
+    <div class="row">
+      <button class="fixed-btn" onclick="teaserYes()">Yes</button>
+      <button class="dodge-btn" id="teaserNoBtn" onclick="teaserDodge()">No</button>
+    </div>
+    <p class="taunt" id="teaserTaunt"></p>
+  </div>
+
+  <!-- 7: real final question -->
+  <div class="step hidden" id="step7">
+    <h1>Okay, for real this time 💛</h1>
+    <p class="sub">Aqsa, do you love Armaghan Danish?</p>
+    <div class="final-options">
+      <button class="love-btn" id="loveYesBtn" onclick="finalAnswer('Yes, I love Armaghan Danish so much 💛')">Yes, I love Armaghan Danish so much 💛</button>
+      <button id="loveNoBtn" onclick="finalAnswer(&quot;No, I don't love Armaghan Danish&quot;)">No, I don't love Armaghan Danish</button>
+    </div>
+    <p class="footnote" style="margin-top:14px;">(one tap and it's sent — no take-backs on this one 😄)</p>
+  </div>
+
+  <!-- 8: thank you -->
+  <div class="step hidden" id="step8">
+    <div class="final-emoji">🎉</div>
+    <h1 id="thankTitle">Sent!</h1>
+    <p class="sub">Thank you for answering. That's all 🥟💛</p>
+    <div class="nav-row"><button class="btn btn-ghost" onclick="goTo(7)">← Change my answer</button></div>
+  </div>
+
+  <div class="footnote">made with 🥟 for you</div>
+</div>
+
+<script>
+  // ============ CONFIG ============
+  // Put your email below. FormSubmit needs no signup — just replace this,
+  // and confirm the one activation email it sends you the first time.
+  const NOTIFY_EMAIL = "REPLACE_WITH_YOUR_EMAIL@example.com";
+  const ENDPOINT = "https://formsubmit.co/ajax/" + NOTIFY_EMAIL;
+
+  let currentStep = 0;
+  const totalSteps = 9;
+  const state = {
+    color: "", food: "", percent: "", likes: "", finalAnswer: ""
+  };
+  const history = { color: [], food: [], percent: [], likes: [] };
+
+  function logChange(field, value){
+    const arr = history[field];
+    if(arr.length === 0 || arr[arr.length-1] !== value){
+      arr.push(value);
+    }
+  }
+
+  function renderDots(){
+    const wrap = document.getElementById('progressDots');
+    wrap.innerHTML = "";
+    for(let i=0;i<totalSteps;i++){
+      const d = document.createElement('div');
+      d.className = 'dot' + (i===currentStep ? ' active' : i<currentStep ? ' done' : '');
+      wrap.appendChild(d);
+    }
+  }
+
+  function goTo(step){
+    document.getElementById('step'+currentStep).classList.add('hidden');
+    currentStep = step;
+    document.getElementById('step'+currentStep).classList.remove('hidden');
+    renderDots();
+  }
+
+  // ---- step 1: color ----
+  document.getElementById('colorInput').addEventListener('input', function(e){
+    document.getElementById('colorNext').disabled = e.target.value.trim().length === 0;
+  });
+  function saveColor(){
+    state.color = document.getElementById('colorInput').value.trim();
+    logChange('color', state.color);
+    goTo(2);
+  }
+
+  // ---- step 2: food ----
+  function pickFood(btn, value){
+    document.querySelectorAll('#foodOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
+    btn.classList.add('picked');
+    state.food = value;
+    logChange('food', value);
+    document.getElementById('foodNext').disabled = false;
+    const reply = document.getElementById('foodReply');
+    reply.textContent = value.startsWith('Momos')
+      ? "Excellent taste. Truly excellent."
+      : "Noted. (Momos would've been the correct answer 😉)";
+  }
+
+  // ---- step 4: love percent ----
+  function pickPercent(btn, value){
+    document.querySelectorAll('#percentOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
+    btn.classList.add('picked');
+    state.percent = value;
+    logChange('percent', value);
+    document.getElementById('percentNext').disabled = false;
+  }
+
+  // ---- step 5: likes text ----
+  document.getElementById('likesInput').addEventListener('input', function(e){
+    document.getElementById('likesNext').disabled = e.target.value.trim().length === 0;
+  });
+  function saveLikes(){
+    state.likes = document.getElementById('likesInput').value.trim();
+    logChange('likes', state.likes);
+    goTo(6);
+  }
+
+  // ---- step 6: teaser (just for fun, nothing recorded) ----
+  let teaserDodgeCount = 0;
+  const teaserTaunts = ["Nice try 😄","That button's shy today","Almost! Try again 👀","It really doesn't want to be pressed","Okay this is just funny now"];
+  function teaserDodge(){
+    const btn = document.getElementById('teaserNoBtn');
+    teaserDodgeCount++;
+    const cardW = document.querySelector('.card').offsetWidth;
+    const maxShift = Math.min(90, cardW/4);
+    const x = (Math.random()-0.5) * maxShift;
+    const y = (Math.random()-0.5) * 40;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+    document.getElementById('teaserTaunt').textContent = teaserTaunts[Math.min(teaserDodgeCount-1, teaserTaunts.length-1)];
+    if(teaserDodgeCount >= 6){
+      btn.style.opacity = "0.3";
+      btn.disabled = true;
+      document.getElementById('teaserTaunt').textContent = "Okay the 'No' button has officially retired 🥟";
+    }
+  }
+  function teaserYes(){
+    goTo(7);
+  }
+
+  // ---- step 7: real final answer (one tap = submit) ----
+  function finalAnswer(value){
+    document.getElementById('loveYesBtn').disabled = true;
+    document.getElementById('loveNoBtn').disabled = true;
+    state.finalAnswer = value;
+    submitAnswers();
+  }
+
+  // ---- attempt tracking (per browser) ----
+  function getAttemptNumber(){
+    let n = parseInt(localStorage.getItem('armaghan_attempt_count') || "0", 10);
+    n += 1;
+    localStorage.setItem('armaghan_attempt_count', n);
+    return n;
+  }
+  function ordinalLabel(n){
+    if(n === 1) return "1st time";
+    if(n === 2) return "2nd time";
+    if(n === 3) return "3rd time";
+    return n + "th time";
+  }
+
+  async function submitAnswers(){
+    const attemptNum = getAttemptNumber();
+    const label = ordinalLabel(attemptNum);
+
+    const payload = {
+      _subject: `Aqsa's answers — ${label}`,
+      _template: "table",
+      submission_label: label,
+      final_answer: state.finalAnswer,
+      favorite_color_final: state.color,
+      favorite_color_changes: history.color.join(" → ") || "—",
+      favorite_food_final: state.food,
+      favorite_food_changes: history.food.join(" → ") || "—",
+      love_percent_final: state.percent,
+      love_percent_changes: history.percent.join(" → ") || "—",
+      what_she_likes_final: state.likes,
+      what_she_likes_changes: history.likes.join(" → ") || "—",
+      timestamp: new Date().toISOString()
+    };
+
+    document.getElementById('thankTitle').textContent =
+      attemptNum === 1 ? "Sent! 🎉" : `Sent again (${label}) 🎉`;
+
+    try{
+      if(NOTIFY_EMAIL.includes("REPLACE_WITH_YOUR_EMAIL")){
+        console.warn("Set NOTIFY_EMAIL to your real email to receive answers.");
+      } else {
+        await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      }
+    }catch(err){
+      console.error("Could not send answers:", err);
+    }
+    // re-enable buttons in case she goes back and answers again
+    document.getElementById('loveYesBtn').disabled = false;
+    document.getElementById('loveNoBtn').disabled = false;
+    goTo(8);
+  }
+
+  renderDots();
+</script>
+
+</body>
+</html>
