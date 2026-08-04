@@ -2,952 +2,431 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>A Little Something</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Armaghan Dev</title>
+<meta name="description" content="Armaghan Dev — software developer. Building clean, fast, reliable products.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FFF8F0;
-    --dumpling:#FFFFFF;
-    --chili:#D93B3B;
-    --chili-dark:#B22B2B;
-    --soy:#3A2A20;
-    --soy-soft:#8A7565;
-    --gold:#E8A93C;
-    --card-bg: rgba(255,255,255,0.92);
-    --shadow: 0 10px 30px rgba(58,42,32,0.12);
-  }
-  body.dark-theme{
-    --soy:#F5EDE3;
-    --soy-soft:#CBB9A8;
-    --card-bg: rgba(38,28,24,0.88);
-    --shadow: 0 10px 34px rgba(0,0,0,0.4);
-  }
-  *{box-sizing:border-box;}
-  html,body{ height:100%; }
-  body{
-    margin:0; min-height:100vh;
-    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
-    display:flex; align-items:center; justify-content:center;
-    padding:20px; color:var(--soy);
-    position:relative;
-    overflow-x:hidden;
-    transition: color .3s ease;
-  }
-  #bgLayer{
-    position:fixed; inset:0; z-index:-1;
-    background-repeat: repeat, no-repeat;
-    background-size: 64px 64px, cover;
-    transition: background 0.8s ease;
-    animation: drift 22s linear infinite;
-  }
-  body.dark-theme #bgLayer{ filter: brightness(0.35) saturate(1.3); }
-  @keyframes drift{ from{ background-position: 0 0, 0 0; } to{ background-position: 64px 64px, 0 0; } }
-
-  #themeToggle{
-    position:fixed; top:16px; right:16px; z-index:50;
-    width:40px; height:40px; border-radius:50%;
-    border:2px solid #F0E3D3; background:rgba(255,255,255,0.85);
-    font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 12px rgba(58,42,32,0.15); transition:transform .15s ease;
-  }
-  #themeToggle:active{ transform:scale(.9) rotate(15deg); }
-  body.dark-theme #themeToggle{ background:rgba(60,45,38,0.85); border-color:#4A3A30; }
-
-  .card{
-    background:var(--card-bg);
-    backdrop-filter: blur(6px);
-    width:100%; max-width:420px;
-    border-radius:28px; padding:34px 26px 30px; box-shadow:var(--shadow);
-    position:relative; text-align:center;
-    animation: pop 0.5s cubic-bezier(.2,1.4,.4,1);
-    transition: background .3s ease;
-  }
-  @keyframes pop{ from{transform:scale(.9); opacity:0;} to{transform:scale(1); opacity:1;} }
-
-  .progress{ display:flex; gap:5px; justify-content:center; margin-bottom:10px; flex-wrap:wrap; }
-  .dot{ height:6px; width:16px; border-radius:4px; background:#F0E3D3; transition:background .3s; }
-  .dot.active{ background:var(--chili); }
-  .dot.done{ background:var(--gold); }
-
-  .love-bar-track{ height:5px; width:100%; background:#F0E3D3; border-radius:4px; margin-bottom:22px; overflow:hidden; }
-  .love-bar-fill{ height:100%; background:linear-gradient(90deg, var(--gold), var(--chili)); border-radius:4px; transition:width .5s ease; }
-
-  h1{ font-size:1.35rem; margin:0 0 6px; min-height:1.6em; }
-  .shimmer-text{
-    background: linear-gradient(90deg, var(--chili), var(--gold), var(--chili));
-    background-size: 200% auto;
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-    animation: shimmer 3s linear infinite;
-  }
-  @keyframes shimmer{ to{ background-position: -200% center; } }
-
-  .rainbow-text{
-    background: linear-gradient(100deg, #E24B4A, #F09595, #ED93B1, #97C459, #639922, #85B7EB, #378ADD, #E24B4A);
-    background-size: 400% auto;
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-    animation: rainbowShift 14s ease-in-out infinite;
-    display:inline-block;
-    letter-spacing:0.5px;
-  }
-  @keyframes rainbowShift{ to{ background-position: -400% center; } }
-
-  /* momos match animation */
-  .momo-match{
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    margin-top:10px; font-size:.95rem; font-weight:700; color:var(--chili-dark);
-    opacity:0; transform:translateY(6px) scale(.9);
-  }
-  .momo-match.show{ animation: momoPop .6s cubic-bezier(.2,1.4,.4,1) forwards; }
-  .momo-match .momo-emoji{ font-size:1.6rem; display:inline-block; }
-  .momo-match.show .momo-emoji{ animation: momoBounce 1s ease-in-out infinite .5s; }
-  @keyframes momoPop{
-    0%{ opacity:0; transform:translateY(6px) scale(.9); }
-    60%{ opacity:1; transform:translateY(-3px) scale(1.06); }
-    100%{ opacity:1; transform:translateY(0) scale(1); }
-  }
-  @keyframes momoBounce{
-    0%,100%{ transform:translateY(0) rotate(-4deg); }
-    50%{ transform:translateY(-6px) rotate(4deg); }
+    --bg: #161310;
+    --bg-raised: #1e1a15;
+    --ink: #EDE6DC;
+    --ink-dim: #a89e8f;
+    --ink-faint: #6f6559;
+    --gold: #E8A33D;
+    --gold-dim: #a3762d;
+    --teal: #4A9B8E;
+    --line: #35302a;
+    --radius: 3px;
   }
 
-  p.sub{ color:var(--soy-soft); font-size:.95rem; margin:0 0 22px; line-height:1.55; }
-  .highlight{ color:var(--chili); font-weight:700; }
-  .note-line{ font-size:.92rem; color:var(--chili-dark); font-weight:600; margin:14px 0 4px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .options{ display:flex; flex-direction:column; gap:12px; margin-bottom:8px; }
-  .opt-btn{ border:2px solid #F0E3D3; background:#FFFCF6; padding:14px 16px; border-radius:16px; font-size:1rem; color:var(--soy); cursor:pointer; transition:all .15s; text-align:left; }
-  .opt-btn:active{ transform:scale(.98); }
-  .opt-btn:hover{ border-color:var(--gold); background:#FFF8EA; animation: wiggle .35s ease; }
-  .opt-btn.picked{ border-color:var(--chili); background:#FFF1F1; font-weight:600; }
-  @keyframes wiggle{ 0%,100%{ transform:rotate(0); } 25%{ transform:rotate(-1.2deg); } 75%{ transform:rotate(1.2deg); } }
-  body.dark-theme .opt-btn{ background:rgba(255,255,255,0.05); color:var(--soy); border-color:#4A3A30; }
-  body.dark-theme .opt-btn:hover{ background:rgba(255,255,255,0.1); }
-
-  .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px; }
-  .opt-grid .opt-btn{ text-align:center; font-weight:700; }
-
-  .quiz-feedback{ font-size:.85rem; font-weight:600; min-height:20px; margin-top:6px; }
-
-  .recap-card{ text-align:left; background:#FFFCF6; border:2px solid #F0E3D3; border-radius:16px; padding:16px; margin-bottom:16px; font-size:.88rem; line-height:1.6; max-height:260px; overflow-y:auto; }
-  .recap-card b{ color:var(--chili-dark); }
-  body.dark-theme .recap-card{ background:rgba(255,255,255,0.05); border-color:#4A3A30; }
-
-  input[type="text"]{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); background:transparent; }
-  input[type="text"]:focus{ outline:none; border-color:var(--gold); }
-  textarea{ width:100%; padding:14px 16px; border-radius:16px; border:2px solid #F0E3D3; font-size:1rem; margin-bottom:16px; font-family:inherit; color:var(--soy); resize:vertical; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; background:transparent; }
-  textarea:focus{ outline:none; border-color:var(--gold); }
-
-  input[type="range"]{ width:100%; margin:10px 0 4px; accent-color:var(--chili); }
-  .slider-readout{ font-size:2rem; margin-bottom:4px; transition:transform .3s ease; }
-  .slider-readout.full-glow{
-    animation: fullGlowPulse 1.4s ease-in-out infinite;
-  }
-  @keyframes fullGlowPulse{
-    0%,100%{ transform:scale(1); text-shadow:0 0 10px rgba(232,169,60,0.35); }
-    50%{ transform:scale(1.18); text-shadow:0 0 22px rgba(232,169,60,0.65); }
-  }
-  .percent-match-msg{
-    font-size:.88rem; font-weight:700; color:var(--gold); margin:2px 0 14px;
-    opacity:0; transform:translateY(4px);
-  }
-  .percent-match-msg.show{ animation: matchMsgIn .5s ease forwards; }
-  @keyframes matchMsgIn{ to{ opacity:1; transform:translateY(0); } }
-  .slider-label{ font-size:.85rem; color:var(--soy-soft); margin-bottom:18px; }
-
-  .nav-row{ display:flex; gap:10px; margin-top:18px; }
-  .btn{ flex:1; padding:14px; border-radius:16px; border:none; font-size:1rem; font-weight:600; cursor:pointer; transition:transform .12s, box-shadow .12s; }
-  .btn:active{ transform:scale(.97); }
-  .btn-primary{ background:var(--chili); color:#fff; box-shadow:0 6px 16px rgba(217,59,59,.35); }
-  .btn-primary:disabled{ background:#F0D8D8; color:#fff; box-shadow:none; cursor:not-allowed; }
-  .btn-ghost{ background:transparent; color:var(--soy-soft); border:2px solid #F0E3D3; }
-
-  .yesno{ position:relative; min-height:180px; }
-  .yesno .row{ display:flex; gap:14px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-  .dodge-btn{ background:#FFFCF6; border:2px solid #F0E3D3; color:var(--soy); padding:16px 22px; border-radius:18px; font-size:1rem; transition:transform .18s ease; cursor:pointer; }
-  .fixed-btn{ background:var(--chili); color:#fff; border:none; padding:16px 22px; border-radius:18px; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:0 8px 20px rgba(217,59,59,.35); }
-  .taunt{ font-size:.85rem; color:var(--soy-soft); margin-top:14px; min-height:18px; }
-
-  .final-emoji{ font-size:3rem; margin-bottom:6px; text-align:center; }
-  .hidden{ display:none !important; }
-  .footnote{ margin-top:18px; font-size:.75rem; color:#CBB9A3; text-align:center; }
-  .credit{ margin-top:4px; font-size:.68rem; color:#DCC9B4; text-align:center; letter-spacing:.2px; cursor:default; user-select:none; }
-  .secret-msg{ margin-top:10px; font-size:.72rem; color:var(--chili-dark); text-align:center; font-weight:600; }
-
-  .final-options{ display:flex; flex-direction:column; gap:12px; }
-  .final-options button{ width:100%; padding:14px 12px; border-radius:18px; font-size:.85rem; line-height:1.3; font-weight:700; cursor:pointer; border:2px solid #F0E3D3; background:#FFFCF6; color:var(--soy); transition:all .15s; }
-  .final-options button.picked{ background:var(--chili); color:#fff; border:none; box-shadow:0 8px 20px rgba(217,59,59,.35); }
-  @media (max-width:360px){
-    .final-options button{ font-size:.78rem; padding:12px 10px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
-  /* step slide transitions */
-  .step.enter-right{ animation: slideInRight .35s ease; }
-  .step.enter-left{ animation: slideInLeft .35s ease; }
-  @keyframes slideInRight{ from{ opacity:0; transform:translateX(26px);} to{ opacity:1; transform:translateX(0);} }
-  @keyframes slideInLeft{ from{ opacity:0; transform:translateX(-26px);} to{ opacity:1; transform:translateX(0);} }
+  html { scroll-behavior: smooth; }
 
-  /* loading overlay */
-  #calcOverlay{
-    position:fixed; inset:0; background:rgba(58,42,32,0.55); backdrop-filter:blur(2px);
-    display:flex; align-items:center; justify-content:center; z-index:100;
-    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% 0%, rgba(232,163,61,0.07), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 30%, rgba(74,155,142,0.06), transparent 60%);
   }
-  #calcOverlay.show{ opacity:1; pointer-events:auto; }
-  .calc-box{ background:#FFFCF6; border-radius:20px; padding:28px 32px; text-align:center; box-shadow:0 12px 30px rgba(0,0,0,.3); }
-  .spinner{ width:36px; height:36px; border:4px solid #F0E3D3; border-top-color:var(--chili); border-radius:50%; margin:0 auto 12px; animation:spin .8s linear infinite; }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-  .calc-box p{ margin:0; font-weight:600; color:var(--soy); font-size:.95rem; }
 
-  /* tap to reveal */
-  .reveal-veil{ background:linear-gradient(160deg,#FFF3E0,#FFE0D0); border:2px dashed var(--gold); border-radius:20px; padding:34px 20px; cursor:pointer; transition:transform .15s ease; }
-  .reveal-veil:active{ transform:scale(.97); }
-  .reveal-veil .rv-icon{ font-size:2.4rem; margin-bottom:8px; }
-  .reveal-content{ animation: pop .4s cubic-bezier(.2,1.4,.4,1); }
+  a { color: inherit; }
 
-  /* emoji reaction bar */
-  .reaction-bar{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
-  .reaction-btn{ font-size:1.4rem; background:#FFFCF6; border:2px solid #F0E3D3; border-radius:14px; padding:8px 12px; cursor:pointer; transition:transform .15s ease; }
-  .reaction-btn:active, .reaction-btn.picked{ transform:scale(1.2); border-color:var(--gold); }
+  .mono { font-family: 'JetBrains Mono', monospace; }
 
-  /* confetti */
-  .confetti-piece{ position:fixed; top:-40px; z-index:9999; pointer-events:none; animation-name:confettiFall; animation-timing-function:ease-in; animation-fill-mode:forwards; }
-  @keyframes confettiFall{ from{ opacity:1; } to{ transform:translateY(112vh) rotate(360deg); opacity:0; } }
+  /* ---------- layout shell ---------- */
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(22, 19, 16, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .logo .brack { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink-dim);
+    transition: color 0.2s ease;
+    position: relative;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--gold); }
+  .nav-links .num { color: var(--teal); }
+
+  /* ---------- hero / terminal ---------- */
+  .hero {
+    padding: 110px 0 90px;
+  }
+
+  .terminal {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(0,0,0,0.15);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #e0645a; }
+  .dot.y { background: #e0b155; }
+  .dot.g { background: #5cb87a; }
+  .terminal-title {
+    margin-left: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .terminal-body {
+    padding: 32px 28px 40px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .prompt-line {
+    color: var(--ink-faint);
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .prompt-line .arrow { color: var(--teal); }
+
+  .type-line {
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 800;
+    line-height: 1.15;
+    min-height: 1.15em;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .type-line .cursor {
+    display: inline-block;
+    width: 0.5ch;
+    background: var(--gold);
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .role-line {
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--ink-dim);
+  }
+  .role-line .comment { color: var(--ink-faint); }
+  .role-line .val { color: var(--gold); }
+
+  .hero-sub {
+    margin-top: 28px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    color: var(--ink-dim);
+    max-width: 52ch;
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    margin-top: 32px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    border: 1px solid transparent;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: #1a1611;
+    font-weight: 700;
+  }
+  .btn-primary:hover, .btn-primary:focus-visible { transform: translateY(-2px); background: #f0ac48; }
+  .btn-ghost {
+    border-color: var(--line);
+    color: var(--ink);
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+
+  /* ---------- section divider ---------- */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 40px;
+  }
+  .divider .brack {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold-dim);
+    font-size: 14px;
+  }
+  .divider .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-faint);
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+  }
+  .divider .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  section { padding: 80px 0; }
+  section#about { padding-top: 20px; }
+
+  /* ---------- about ---------- */
+  .about-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 30px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14.5px;
+    line-height: 1.9;
+  }
+  .about-card .cmt { color: var(--ink-faint); }
+  .about-card p.body-text {
+    font-family: 'Manrope', sans-serif;
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 6px 0 6px 0;
+  }
+  .about-card strong { color: var(--ink); font-weight: 600; }
+  .about-card .accent { color: var(--teal); }
+
+  /* ---------- skills ---------- */
+  .skills-obj {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 28px 32px;
+    overflow-x: auto;
+  }
+  .skills-obj .key { color: var(--teal); }
+  .skills-obj .punct { color: var(--ink-faint); }
+  .skills-obj .arr-item { color: var(--gold); }
+  .skills-obj .line { padding-left: 24px; white-space: nowrap; }
+
+  .skill-grid {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .skill-tile {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .skill-tile:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+  .skill-tile .t-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .skill-tile .t-value {
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ---------- work ---------- */
+  .work-list { display: flex; flex-direction: column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;}
+  .work-item {
+    background: var(--bg-raised);
+    padding: 24px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    transition: background 0.2s ease;
+  }
+  .work-item:hover { background: #241f18; }
+  .work-name { font-size: 17px; font-weight: 700; }
+  .work-desc { color: var(--ink-dim); font-size: 14px; margin-top: 4px; }
+  .work-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    border: 1px solid rgba(74,155,142,0.35);
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* ---------- contact ---------- */
+  .contact-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 40px 36px;
+    text-align: left;
+  }
+  .contact-fn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(18px, 3.4vw, 26px);
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .contact-fn .kw { color: var(--teal); }
+  .contact-fn .fn { color: var(--gold); }
+  .contact-fn .arg { color: var(--ink-dim); }
+
+  .contact-links {
+    margin-top: 26px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 40px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 640px) {
+    .nav-links { gap: 16px; }
+    .nav-links span.num { display: none; }
+    .hero { padding: 70px 0 60px; }
+    .terminal-body { padding: 24px 18px 30px; }
+    .skill-grid { grid-template-columns: repeat(2, 1fr); }
+    .work-item { flex-direction: column; align-items: flex-start; }
+    .about-card, .skills-obj, .contact-card { padding: 22px 18px; }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
 
-<div id="bgLayer"></div>
-<button id="themeToggle" onclick="toggleTheme()" title="Switch theme">🌙</button>
-<div id="calcOverlay"><div class="calc-box"><div class="spinner"></div><p id="calcText">Calculating results... 💭</p></div></div>
+<header>
+  <nav class="nav">
+    <div class="logo"><span class="brack">{</span>Armaghan<span class="brack">}</span> <span style="color:var(--ink-dim); font-weight:500;">dev</span></div>
+  </nav>
+</header>
 
-<div class="card">
-  <div class="progress" id="progressDots"></div>
-  <div class="love-bar-track"><div class="love-bar-fill" id="loveBarFill" style="width:0%"></div></div>
-
-  <!-- 0: welcome -->
-  <div class="step" id="step0">
-    <h1 id="welcomeHeading">Hey <span class="rainbow-text">Aqsa Asif</span></h1>
-    <p class="sub" id="welcomeSub"></p>
-    <div class="nav-row"><button class="btn btn-primary" onclick="goTo(1)">Let's go →</button></div>
-  </div>
-
-  <!-- 1: color -->
-  <div class="step hidden" id="step1">
-    <h1>Quick one 🎨</h1>
-    <p class="sub">What's your favorite color?</p>
-    <input type="text" id="colorInput" placeholder="Type it here...">
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(0)">← Back</button>
-      <button class="btn btn-primary" id="colorNext" onclick="saveColor()" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- 2: food -->
-  <div class="step hidden" id="step2">
-    <h1>Okay, food time 🍜</h1>
-    <p class="sub">What's your favorite food?</p>
-    <div class="options" id="foodOptions">
-      <button class="opt-btn" onclick="pickFood(this,'Momos 🥟')">Momos 🥟</button>
-      <button class="opt-btn" onclick="pickFood(this,'Biryani 🍛')">Biryani 🍛</button>
-      <button class="opt-btn" onclick="pickFood(this,'Pizza 🍕')">Pizza 🍕</button>
-      <button class="opt-btn" onclick="pickFood(this,'Something else')">Something else 🍽️</button>
-    </div>
-    <input type="text" id="customFoodInput" placeholder="Type your favorite food..." class="hidden" style="margin-top:4px;">
-    <p class="note-line">Armaghan's Favorite is Momos 🥟</p>
-    <div class="momo-match" id="momoMatch"><span class="momo-emoji">🥟</span><span>It's a match! Armaghan loves momos too</span><span class="momo-emoji">🥟</span></div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
-      <button class="btn btn-primary" id="foodNext" onclick="goTo(3)" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- 3: love meter (slider) -->
-  <div class="step hidden" id="step3">
-    <h1>Be honest 🌿</h1>
-    <p class="sub">How much do you like Armaghan Danish's nature?</p>
-    <div class="slider-readout" id="percentEmoji">🍃</div>
-    <input type="range" min="0" max="100" value="50" id="percentSlider">
-    <div class="slider-label"><span id="percentValueLabel">50%</span></div>
-    <p class="percent-match-msg" id="percentMatchMsg">Full bloom! Perfect match 🌟</p>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
-      <button class="btn btn-primary" id="percentNext" onclick="savePercent()" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- 4: what things do you like about him -->
-  <div class="step hidden" id="step4">
-    <h1>One more 💭</h1>
-    <p class="sub">What things do you like about me?</p>
-    <textarea id="likesInput" rows="6" placeholder="Write anything..."></textarea>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
-      <button class="btn btn-primary" id="likesNext" onclick="saveLikes()" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- 5: something I should know about you -->
-  <div class="step hidden" id="step5">
-    <h1>Your turn 📝</h1>
-    <p class="sub">Is there something I should know about you? Write anything you'd like me to know, anything special or common.</p>
-    <textarea id="aboutInput" rows="6" placeholder="Write anything..."></textarea>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(4)">← Back</button>
-      <button class="btn btn-primary" id="aboutNext" onclick="saveAbout()" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- 6: one more open question -->
-  <div class="step hidden" id="step6">
-    <h1>Almost there 🌟</h1>
-    <p class="sub">What's one thing that always makes you smile?</p>
-    <textarea id="smileInput" rows="6" placeholder="Write anything..."></textarea>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(5)">← Back</button>
-      <button class="btn btn-primary" id="smileNext" onclick="saveSmile()" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- 7: mini quiz, just for fun -->
-  <div class="step hidden" id="step7">
-    <h1>Quick quiz 🧠</h1>
-    <p class="sub">Let's see how well you know him... (just for fun, no pressure!)</p>
-    <p class="note-line" style="margin-top:0;">Q1. What's Armaghan's favorite food?</p>
-    <div class="options" id="quizOptions1">
-      <button class="opt-btn" onclick="answerQuiz1(this,false)">Pizza 🍕</button>
-      <button class="opt-btn" onclick="answerQuiz1(this,true)">Momos 🥟</button>
-      <button class="opt-btn" onclick="answerQuiz1(this,false)">Biryani 🍛</button>
-    </div>
-    <p class="quiz-feedback" id="quiz1Feedback"></p>
-    <p class="note-line">Q2. True or False: You just smiled reading this 😄</p>
-    <div class="options" id="quizOptions2">
-      <button class="opt-btn" onclick="answerQuiz2(this)">True</button>
-      <button class="opt-btn" onclick="answerQuiz2(this)">False</button>
-    </div>
-    <p class="quiz-feedback" id="quiz2Feedback"></p>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(6)">← Back</button>
-      <button class="btn btn-primary" onclick="goTo(8)">Next →</button>
-    </div>
-  </div>
-
-  <!-- 8: recap -->
-  <div class="step hidden" id="step8">
-    <h1>Here's what you shared 💌</h1>
-    <p class="sub">Quick look before we go on — you can still go back and change anything.</p>
-    <div class="recap-card" id="recapCard"></div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(7)">← Back</button>
-      <button class="btn btn-primary" onclick="goTo(9)">Looks good →</button>
-    </div>
-  </div>
-
-  <!-- 9: teaser (not recorded, just for fun) -->
-  <div class="step hidden yesno" id="step9">
-    <h1>Real quick... 👀</h1>
-    <p class="sub">Do you love Armaghan?</p>
-    <div class="row">
-      <button class="fixed-btn" onclick="teaserYes()">Yes</button>
-      <button class="dodge-btn" id="teaserNoBtn" onclick="teaserDodge()">No</button>
-    </div>
-    <p class="taunt" id="teaserTaunt"></p>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(8)">← Back</button>
-    </div>
-  </div>
-
-  <!-- 10: real final question -->
-  <div class="step hidden" id="step10">
-    <h1>Okay, for real this time ❤️</h1>
-    <p class="sub">Aqsa, do you love Armaghan Danish?</p>
-    <div class="final-options">
-      <button class="love-btn" id="loveYesBtn" onclick="selectFinal(this,'Yes, I love Armaghan Danish so much ❤️')">Yes, I love Armaghan Danish so much ❤️</button>
-      <button id="loveMaybeBtn" onclick="selectFinal(this,'Maybe around 70%, still figuring it out 💛')">Maybe around 70%, still figuring it out 💛</button>
-      <button id="loveNoBtn" onclick="selectFinal(this,&quot;No, I don't love Armaghan Danish&quot;)">No, I don't love Armaghan Danish</button>
-    </div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="goTo(9)">← Back</button>
-      <button class="btn btn-primary" id="finalSubmitBtn" onclick="submitFinal()" disabled>Submit answer</button>
-    </div>
-  </div>
-
-  <!-- 11: thank you (tap to reveal) -->
-  <div class="step hidden" id="step11">
-    <div id="revealVeil" class="reveal-veil" onclick="revealThankYou()">
-      <div class="rv-icon">🎁</div>
-      <p class="sub" style="margin-bottom:0;">Tap to see it land ✨</p>
-    </div>
-    <div id="revealContent" class="hidden reveal-content">
-      <div class="final-emoji">🎉</div>
-      <h1 id="thankTitle">Sent!</h1>
-      <p class="sub">Thank you for submitting your views ❤️</p>
-      <div class="reaction-bar" id="reactionBar">
-        <button class="reaction-btn" onclick="pickReaction(this,'😊')">😊</button>
-        <button class="reaction-btn" onclick="pickReaction(this,'🥰')">🥰</button>
-        <button class="reaction-btn" onclick="pickReaction(this,'😂')">😂</button>
-        <button class="reaction-btn" onclick="pickReaction(this,'💛')">💛</button>
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="terminal-title">~/armaghan-dev — zsh</span>
+        </div>
+        <div class="terminal-body">
+          <div class="prompt-line"><span class="arrow">➜</span> whoami</div>
+          <div class="type-line mono" id="typeTarget"></div>
+          <div class="role-line"><span class="comment">// </span>role<span class="punct">:</span> <span class="val">IT Engineer & Web Dev</span></div>
+          <p class="hero-sub">I design and build systems and websites that are fast, dependable, and easy to maintain — from infrastructure and networks to the sites people actually use. I care about the details most people skip — clean structure, reliable systems, and code that reads like it was written for a person, not just a compiler.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#contact">Get in touch</a>
+          </div>
+        </div>
       </div>
-      <div class="nav-row"><button class="btn btn-ghost" onclick="goTo(10)">← Change my answer</button></div>
     </div>
-  </div>
-
-  <div class="footnote">made with ❤️ for you</div>
-  <div class="credit" id="creditLine" onclick="tapCredit()">App Developed by Armaghan Danish 😂</div>
-  <p class="secret-msg hidden" id="secretMsg">🤫 psst... this took way too many late nights to build. hope it made you smile.</p>
-</div>
+  </section>
+</main>
 
 <script>
-  // ============ CONFIG ============
-  const NOTIFY_EMAIL = "samsoftwares99@gmail.com";
-  const ENDPOINT = "https://formsubmit.co/ajax/" + NOTIFY_EMAIL;
+  // Typing effect for hero name
+  const target = document.getElementById('typeTarget');
+  const text = "Armaghan Dev";
+  let i = 0;
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  cursor.innerHTML = '&nbsp;';
 
-  let currentStep = 0;
-  const totalSteps = 12;
-  let lastSubmissionLabel = "";
-  const state = {
-    color: "", food: "", percent: "", likes: "", about: "", smile: "", finalAnswer: "", reaction: ""
-  };
-  const history = { color: [], food: [], percent: [], likes: [], about: [], smile: [] };
-
-  function logChange(field, value){
-    const arr = history[field];
-    if(arr.length === 0 || arr[arr.length-1] !== value){
-      arr.push(value);
+  function type() {
+    if (i <= text.length) {
+      target.textContent = text.slice(0, i);
+      target.appendChild(cursor);
+      i++;
+      setTimeout(type, 90);
     }
   }
 
-  // ---- theme toggle ----
-  function toggleTheme(){
-    document.body.classList.toggle('dark-theme');
-    document.getElementById('themeToggle').textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    target.textContent = text;
+    target.appendChild(cursor);
+  } else {
+    type();
   }
-
-  // ---- decorative themed patterns (self-contained SVG "images", no external files needed) ----
-  function svgPattern(inner){
-    return "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>" + inner + "</svg>\")";
-  }
-
-  const PATTERN_HEART = svgPattern(
-    "<path d='M16 26s-8-5.2-11-9.6C2.6 12.6 4 8 8.4 6.9 10.8 6.3 13.3 7.5 16 10.4c2.7-2.9 5.2-4.1 7.6-3.5C28 7.9 29.4 12.6 26.5 16.4 23.5 20.8 16 26 16 26z' fill='%23D93B3B' fill-opacity='0.07'/><circle cx='48' cy='46' r='6' fill='%23E8A93C' fill-opacity='0.08'/>"
-  );
-  const PATTERN_WELCOME = svgPattern(
-    "<path d='M0 42 Q16 30 32 42 T64 42' stroke='%23E8A93C' stroke-opacity='0.1' stroke-width='2' fill='none'/><path d='M16 8 L18 14 L24 16 L18 18 L16 24 L14 18 L8 16 L14 14 Z' fill='%23E8A93C' fill-opacity='0.1'/><circle cx='48' cy='14' r='3' fill='%238A7565' fill-opacity='0.08'/><circle cx='52' cy='50' r='4' fill='%23D9A24B' fill-opacity='0.07'/>"
-  );
-  const PATTERN_LEAF = svgPattern(
-    "<path d='M32 10 C46 14 50 30 32 54 C14 30 18 14 32 10 Z' fill='%234C8C4A' fill-opacity='0.09'/><line x1='32' y1='16' x2='32' y2='48' stroke='%234C8C4A' stroke-opacity='0.12' stroke-width='1.4'/><circle cx='10' cy='50' r='4' fill='%2377B36B' fill-opacity='0.08'/>"
-  );
-  const PATTERN_PALETTE = svgPattern(
-    "<circle cx='13' cy='15' r='7' fill='%23E63946' fill-opacity='0.12'/><circle cx='31' cy='9' r='6' fill='%23F4A261' fill-opacity='0.12'/><circle cx='49' cy='17' r='7' fill='%232A9D8F' fill-opacity='0.12'/><circle cx='17' cy='39' r='6' fill='%23457B9D' fill-opacity='0.12'/><circle cx='39' cy='41' r='7' fill='%239B5DE5' fill-opacity='0.12'/><circle cx='55' cy='51' r='5' fill='%23E9C46A' fill-opacity='0.13'/><circle cx='7' cy='55' r='5' fill='%23F15BB5' fill-opacity='0.12'/><circle cx='24' cy='24' r='1.6' fill='%23E63946' fill-opacity='0.18'/><circle cx='44' cy='30' r='1.4' fill='%232A9D8F' fill-opacity='0.18'/><circle cx='30' cy='50' r='1.5' fill='%239B5DE5' fill-opacity='0.18'/>"
-  );
-  const PATTERN_KITCHEN = svgPattern(
-    "<rect x='2' y='2' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><rect x='16' y='2' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><rect x='9' y='9' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><rect x='2' y='16' width='7' height='7' fill='%23C98B4A' fill-opacity='0.06'/><path d='M40 14 a12 8 0 0 0 24 0 z' fill='%23D9622B' fill-opacity='0.1'/><path d='M46 2 q2 -5 0 -8 M52 2 q2 -5 0 -8' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='1.4' fill='none'/><path d='M16 40 L27 40 L21.5 51 Z' fill='%23E9C46A' fill-opacity='0.15'/><circle cx='21.5' cy='38' r='1.4' fill='%23D93B3B' fill-opacity='0.18'/><ellipse cx='48' cy='48' rx='8' ry='5.5' fill='%23C98B4A' fill-opacity='0.13'/><path d='M48 43 q3 -3 6 0' stroke='%238A5A2E' stroke-opacity='0.15' stroke-width='1.3' fill='none'/>"
-  );
-  const PATTERN_GLOW = svgPattern(
-    "<circle cx='32' cy='32' r='4.5' fill='%23E8A93C' fill-opacity='0.14'/><line x1='32' y1='12' x2='32' y2='20' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='32' y1='44' x2='32' y2='52' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='12' y1='32' x2='20' y2='32' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='44' y1='32' x2='52' y2='32' stroke='%23E8A93C' stroke-opacity='0.14' stroke-width='2'/><line x1='17' y1='17' x2='23' y2='23' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/><line x1='41' y1='41' x2='47' y2='47' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/><line x1='47' y1='17' x2='41' y2='23' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/><line x1='23' y1='41' x2='17' y2='47' stroke='%23E8A93C' stroke-opacity='0.12' stroke-width='2'/>"
-  );
-  const PATTERN_SMILE = svgPattern(
-    "<circle cx='23' cy='23' r='2' fill='%23E8A93C' fill-opacity='0.16'/><circle cx='41' cy='23' r='2' fill='%23E8A93C' fill-opacity='0.16'/><path d='M18 33 Q32 47 46 33' stroke='%23E8A93C' stroke-opacity='0.16' stroke-width='2.4' fill='none' stroke-linecap='round'/><circle cx='56' cy='52' r='2' fill='%23D93B3B' fill-opacity='0.1'/><path d='M52 52 Q56 56 60 52' stroke='%23D93B3B' stroke-opacity='0.12' stroke-width='1.6' fill='none' stroke-linecap='round'/>"
-  );
-  const PATTERN_FLOWER = svgPattern(
-    "<g fill='%238A7565' fill-opacity='0.07'><circle cx='32' cy='24' r='6'/><circle cx='40' cy='32' r='6'/><circle cx='32' cy='40' r='6'/><circle cx='24' cy='32' r='6'/></g><circle cx='32' cy='32' r='5' fill='%23E8A93C' fill-opacity='0.12'/>"
-  );
-  const PATTERN_STAR = svgPattern(
-    "<path d='M32 12 L35.5 27.5 L50 32 L35.5 36.5 L32 52 L28.5 36.5 L14 32 L28.5 27.5 Z' fill='%23E8A93C' fill-opacity='0.1'/>"
-  );
-  const PATTERN_CONFETTI = svgPattern(
-    "<rect x='10' y='12' width='6' height='3' fill='%23D93B3B' fill-opacity='0.09' transform='rotate(20 13 13)'/><rect x='42' y='46' width='6' height='3' fill='%23E8A93C' fill-opacity='0.1' transform='rotate(-15 45 47)'/><circle cx='50' cy='16' r='2.5' fill='%23D93B3B' fill-opacity='0.09'/><circle cx='14' cy='48' r='2.5' fill='%23E8A93C' fill-opacity='0.09'/>"
-  );
-
-  const stepBackgrounds = [
-    "linear-gradient(160deg, #FFF9F1 0%, #FDEFD9 100%)",   // 0 welcome
-    "linear-gradient(135deg, #FDFBF7 0%, #EAF6FF 30%, #EAFBE4 60%, #FFF6E0 100%)", // 1 color
-    "linear-gradient(160deg, #FFF3DD 0%, #F3D9B1 100%)",   // 2 food
-    "linear-gradient(160deg, #E9F7EC 0%, #D3EFDA 100%)",   // 3 love meter (nature)
-    "linear-gradient(160deg, #FFF7E8 0%, #FFE9C7 100%)",   // 4 what you like about me
-    "linear-gradient(160deg, #E8F8F0 0%, #D6F0E6 100%)",   // 5 about you
-    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 6 smile question
-    "linear-gradient(160deg, #FFF3E8 0%, #FFE0C2 100%)",   // 7 quiz
-    "linear-gradient(160deg, #FDF6EE 0%, #F6E6D8 100%)",   // 8 recap
-    "linear-gradient(160deg, #FFF6E0 0%, #FFE3B8 100%)",   // 9 teaser
-    "linear-gradient(160deg, #FFE9EC 0%, #FFC2CC 100%)",   // 10 final question
-    "linear-gradient(160deg, #FFF0F0 0%, #FFD3D9 100%)"    // 11 thank you
-  ];
-
-  const stepPatterns = [
-    PATTERN_WELCOME, PATTERN_PALETTE, PATTERN_KITCHEN, PATTERN_LEAF, PATTERN_GLOW,
-    PATTERN_FLOWER, PATTERN_SMILE, PATTERN_STAR, PATTERN_FLOWER, PATTERN_STAR,
-    PATTERN_HEART, PATTERN_CONFETTI
-  ];
-
-  function setBackground(step){
-    const grad = stepBackgrounds[step] || stepBackgrounds[0];
-    const pattern = stepPatterns[step] || PATTERN_HEART;
-    document.getElementById('bgLayer').style.backgroundImage = pattern + ", " + grad;
-  }
-
-  function renderDots(){
-    const wrap = document.getElementById('progressDots');
-    wrap.innerHTML = "";
-    for(let i=0;i<totalSteps;i++){
-      const d = document.createElement('div');
-      d.className = 'dot' + (i===currentStep ? ' active' : i<currentStep ? ' done' : '');
-      wrap.appendChild(d);
-    }
-    document.getElementById('loveBarFill').style.width = Math.round((currentStep/(totalSteps-1))*100) + "%";
-  }
-
-  // ---- typewriter effect for headings ----
-  function typeHeading(el){
-    const finalHTML = el.getAttribute('data-original') || el.innerHTML;
-    el.setAttribute('data-original', finalHTML);
-    const text = el.textContent;
-    el.textContent = "";
-    let i = 0;
-    const speed = Math.max(14, Math.min(30, 400/text.length));
-    (function tick(){
-      if(i <= text.length){
-        el.textContent = text.slice(0,i);
-        i++;
-        setTimeout(tick, speed);
-      } else {
-        el.innerHTML = finalHTML;
-      }
-    })();
-  }
-
-  function goTo(step){
-    const oldStepEl = document.getElementById('step'+currentStep);
-    oldStepEl.classList.add('hidden');
-    oldStepEl.classList.remove('enter-right','enter-left');
-    const direction = step > currentStep ? 'enter-right' : 'enter-left';
-    currentStep = step;
-    const newStepEl = document.getElementById('step'+currentStep);
-    newStepEl.classList.remove('hidden');
-    newStepEl.classList.add(direction);
-    setTimeout(()=>newStepEl.classList.remove(direction), 400);
-    renderDots();
-    setBackground(step);
-
-    if(step === 8){ renderRecap(); }
-
-    const h1 = newStepEl.querySelector('h1');
-    if(h1 && !h1.querySelector('.shimmer-text') && !h1.querySelector('.rainbow-text')){ typeHeading(h1); }
-  }
-
-  // ---- confetti ----
-  function spawnConfetti(emojis, count){
-    for(let i=0;i<count;i++){
-      const piece = document.createElement('span');
-      piece.className = 'confetti-piece';
-      piece.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-      piece.style.left = (Math.random()*100) + "vw";
-      piece.style.fontSize = (1.1 + Math.random()*1.3) + "rem";
-      const duration = 2.2 + Math.random()*1.6;
-      const delay = Math.random()*0.5;
-      piece.style.animationDuration = duration + "s";
-      piece.style.animationDelay = delay + "s";
-      document.body.appendChild(piece);
-      setTimeout(()=>piece.remove(), (duration+delay)*1000 + 200);
-    }
-  }
-
-  // ---- step 1: color ----
-  document.getElementById('colorInput').addEventListener('input', function(e){
-    document.getElementById('colorNext').disabled = e.target.value.trim().length === 0;
-  });
-  function saveColor(){
-    state.color = document.getElementById('colorInput').value.trim();
-    logChange('color', state.color);
-    goTo(2);
-  }
-
-  // ---- step 2: food ----
-  function pickFood(btn, value){
-    document.querySelectorAll('#foodOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
-    btn.classList.add('picked');
-    const customInput = document.getElementById('customFoodInput');
-    const foodNext = document.getElementById('foodNext');
-    const momoMatch = document.getElementById('momoMatch');
-    if(value === 'Something else'){
-      customInput.classList.remove('hidden');
-      customInput.value = "";
-      customInput.focus();
-      state.food = "";
-      foodNext.disabled = true;
-      momoMatch.classList.remove('show');
-    } else {
-      customInput.classList.add('hidden');
-      state.food = value;
-      logChange('food', value);
-      foodNext.disabled = false;
-      if(value.indexOf('Momos') === 0){
-        momoMatch.classList.remove('show');
-        void momoMatch.offsetWidth; // restart animation
-        momoMatch.classList.add('show');
-        spawnConfetti(['🥟','💛'], 12);
-      } else {
-        momoMatch.classList.remove('show');
-      }
-    }
-  }
-  document.getElementById('customFoodInput').addEventListener('input', function(e){
-    const val = e.target.value.trim();
-    state.food = val;
-    document.getElementById('foodNext').disabled = val.length === 0;
-    document.getElementById('momoMatch').classList.remove('show');
-  });
-  document.getElementById('foodNext').addEventListener('click', function(){
-    const customInput = document.getElementById('customFoodInput');
-    if(!customInput.classList.contains('hidden') && state.food){
-      logChange('food', state.food);
-    }
-  }, true);
-
-  // ---- step 3: love percent slider ----
-  const percentSlider = document.getElementById('percentSlider');
-  const percentEmoji = document.getElementById('percentEmoji');
-  const percentValueLabel = document.getElementById('percentValueLabel');
-  const percentMatchMsg = document.getElementById('percentMatchMsg');
-  let hit100Before = false;
-  function emojiForPercent(v){
-    if(v < 30) return '🌱';
-    if(v < 60) return '🍃';
-    if(v < 90) return '🌿';
-    if(v < 100) return '🌸';
-    return '🌟';
-  }
-  percentSlider.addEventListener('input', function(e){
-    const v = Number(e.target.value);
-    percentEmoji.textContent = emojiForPercent(v);
-    percentValueLabel.textContent = v + "%";
-    document.getElementById('percentNext').disabled = false;
-
-    if(v === 100){
-      percentEmoji.classList.add('full-glow');
-      percentMatchMsg.classList.add('show');
-      if(!hit100Before){
-        hit100Before = true;
-        spawnConfetti(['🌟','✨','💫'], 18);
-      }
-    } else {
-      percentEmoji.classList.remove('full-glow');
-      percentMatchMsg.classList.remove('show');
-      hit100Before = false;
-    }
-  });
-  function savePercent(){
-    state.percent = percentSlider.value + "%";
-    logChange('percent', state.percent);
-    goTo(4);
-  }
-
-  // ---- step 4: likes text ----
-  document.getElementById('likesInput').addEventListener('input', function(e){
-    document.getElementById('likesNext').disabled = e.target.value.trim().length === 0;
-  });
-  function saveLikes(){
-    state.likes = document.getElementById('likesInput').value.trim();
-    logChange('likes', state.likes);
-    goTo(5);
-  }
-
-  // ---- step 5: about you text ----
-  document.getElementById('aboutInput').addEventListener('input', function(e){
-    document.getElementById('aboutNext').disabled = e.target.value.trim().length === 0;
-  });
-  function saveAbout(){
-    state.about = document.getElementById('aboutInput').value.trim();
-    logChange('about', state.about);
-    goTo(6);
-  }
-
-  // ---- step 6: smile question ----
-  document.getElementById('smileInput').addEventListener('input', function(e){
-    document.getElementById('smileNext').disabled = e.target.value.trim().length === 0;
-  });
-  function saveSmile(){
-    state.smile = document.getElementById('smileInput').value.trim();
-    logChange('smile', state.smile);
-    goTo(7);
-  }
-
-  // ---- step 7: mini quiz (just for fun, nothing saved) ----
-  function answerQuiz1(btn, correct){
-    document.querySelectorAll('#quizOptions1 .opt-btn').forEach(b=>b.classList.remove('picked'));
-    btn.classList.add('picked');
-    document.getElementById('quiz1Feedback').textContent = "Noted 😊";
-    document.getElementById('quiz1Feedback').style.color = 'var(--chili-dark)';
-  }
-  function answerQuiz2(btn){
-    document.querySelectorAll('#quizOptions2 .opt-btn').forEach(b=>b.classList.remove('picked'));
-    btn.classList.add('picked');
-    document.getElementById('quiz2Feedback').textContent = "😄 Called it!";
-    document.getElementById('quiz2Feedback').style.color = 'var(--chili-dark)';
-  }
-
-  // ---- step 8: recap ----
-  function shorten(text, max){
-    if(!text) return "—";
-    return text.length > max ? text.slice(0,max).trim() + "…" : text;
-  }
-  function renderRecap(){
-    const el = document.getElementById('recapCard');
-    el.innerHTML =
-      "<div><b>Favorite color:</b> " + (state.color || "—") + "</div>" +
-      "<div style='margin-top:8px;'><b>Favorite food:</b> " + (state.food || "—") + "</div>" +
-      "<div style='margin-top:8px;'><b>Love meter:</b> " + (state.percent || "—") + "</div>" +
-      "<div style='margin-top:8px;'><b>What you like about me:</b> " + shorten(state.likes, 90) + "</div>" +
-      "<div style='margin-top:8px;'><b>About you:</b> " + shorten(state.about, 90) + "</div>" +
-      "<div style='margin-top:8px;'><b>What makes you smile:</b> " + shorten(state.smile, 90) + "</div>";
-  }
-
-  // ---- step 9: teaser (just for fun, nothing recorded) ----
-  let teaserDodgeCount = 0;
-  const teaserTaunts = ["Nice try 😄","That button's shy today","Almost! Try again 👀","It really doesn't want to be pressed","Okay this is just funny now"];
-  function teaserDodge(){
-    const btn = document.getElementById('teaserNoBtn');
-    teaserDodgeCount++;
-    const cardW = document.querySelector('.card').offsetWidth;
-    const maxShift = Math.min(90, cardW/4);
-    const x = (Math.random()-0.5) * maxShift;
-    const y = (Math.random()-0.5) * 40;
-    btn.style.transform = `translate(${x}px, ${y}px)`;
-    document.getElementById('teaserTaunt').textContent = teaserTaunts[Math.min(teaserDodgeCount-1, teaserTaunts.length-1)];
-    if(teaserDodgeCount >= 6){
-      btn.style.opacity = "0.3";
-      btn.disabled = true;
-      document.getElementById('teaserTaunt').textContent = "The 'No' button has officially retired 💔";
-    }
-  }
-  function teaserYes(){
-    goTo(10);
-  }
-
-  // ---- step 10: real final answer (pick, then tap Submit) ----
-  function selectFinal(btn, value){
-    document.getElementById('loveYesBtn').classList.remove('picked');
-    document.getElementById('loveMaybeBtn').classList.remove('picked');
-    document.getElementById('loveNoBtn').classList.remove('picked');
-    btn.classList.add('picked');
-    state.finalAnswer = value;
-    document.getElementById('finalSubmitBtn').disabled = false;
-    if(value.indexOf('Yes') === 0){
-      spawnConfetti(['❤️','✨'], 10);
-    }
-  }
-  function submitFinal(){
-    document.getElementById('loveYesBtn').disabled = true;
-    document.getElementById('loveMaybeBtn').disabled = true;
-    document.getElementById('loveNoBtn').disabled = true;
-    document.getElementById('finalSubmitBtn').disabled = true;
-    const overlay = document.getElementById('calcOverlay');
-    overlay.classList.add('show');
-    const calcMessages = ["Calculating results... 💭","Double-checking everything... 🔍","Almost done... ✨"];
-    let mi = 0;
-    const calcText = document.getElementById('calcText');
-    calcText.textContent = calcMessages[0];
-    const calcInterval = setInterval(()=>{
-      mi = (mi+1) % calcMessages.length;
-      calcText.textContent = calcMessages[mi];
-    }, 700);
-
-    const minDelay = new Promise(res => setTimeout(res, 1600));
-    Promise.all([submitAnswers(), minDelay]).then(()=>{
-      clearInterval(calcInterval);
-      overlay.classList.remove('show');
-      document.getElementById('loveYesBtn').disabled = false;
-      document.getElementById('loveMaybeBtn').disabled = false;
-      document.getElementById('loveNoBtn').disabled = false;
-      document.getElementById('finalSubmitBtn').disabled = false;
-      // reset reveal veil for a fresh reveal each time
-      document.getElementById('revealVeil').classList.remove('hidden');
-      document.getElementById('revealContent').classList.add('hidden');
-      goTo(11);
-    });
-  }
-
-  // ---- step 11: tap to reveal + reactions ----
-  function revealThankYou(){
-    document.getElementById('revealVeil').classList.add('hidden');
-    document.getElementById('revealContent').classList.remove('hidden');
-    if(state.finalAnswer.indexOf('Yes') === 0){
-      spawnConfetti(['❤️','💛','✨','🎉'], 26);
-    } else if(state.finalAnswer.indexOf('Maybe') === 0){
-      spawnConfetti(['💛','✨'], 16);
-    }
-  }
-  function pickReaction(btn, emoji){
-    document.querySelectorAll('.reaction-btn').forEach(b=>b.classList.remove('picked'));
-    btn.classList.add('picked');
-    state.reaction = emoji;
-    sendReaction(emoji);
-    setTimeout(restartApp, 1400);
-  }
-
-  // ---- restart the whole flow fresh after a completed round ----
-  function restartApp(){
-    // reset state and history
-    state.color = ""; state.food = ""; state.percent = ""; state.likes = "";
-    state.about = ""; state.smile = ""; state.finalAnswer = ""; state.reaction = "";
-    history.color = []; history.food = []; history.percent = [];
-    history.likes = []; history.about = []; history.smile = [];
-
-    // reset inputs
-    document.getElementById('colorInput').value = "";
-    document.getElementById('colorNext').disabled = true;
-
-    document.querySelectorAll('#foodOptions .opt-btn').forEach(b=>b.classList.remove('picked'));
-    document.getElementById('customFoodInput').value = "";
-    document.getElementById('customFoodInput').classList.add('hidden');
-    document.getElementById('foodNext').disabled = true;
-    document.getElementById('momoMatch').classList.remove('show');
-
-    document.getElementById('percentSlider').value = 50;
-    document.getElementById('percentEmoji').textContent = '🍃';
-    document.getElementById('percentEmoji').classList.remove('full-glow');
-    document.getElementById('percentValueLabel').textContent = '50%';
-    document.getElementById('percentMatchMsg').classList.remove('show');
-    document.getElementById('percentNext').disabled = true;
-
-    document.getElementById('likesInput').value = "";
-    document.getElementById('likesNext').disabled = true;
-    document.getElementById('aboutInput').value = "";
-    document.getElementById('aboutNext').disabled = true;
-    document.getElementById('smileInput').value = "";
-    document.getElementById('smileNext').disabled = true;
-
-    document.querySelectorAll('#quizOptions1 .opt-btn, #quizOptions2 .opt-btn').forEach(b=>b.classList.remove('picked'));
-    document.getElementById('quiz1Feedback').textContent = "";
-    document.getElementById('quiz2Feedback').textContent = "";
-
-    teaserDodgeCount = 0;
-    const teaserBtn = document.getElementById('teaserNoBtn');
-    teaserBtn.style.transform = "";
-    teaserBtn.style.opacity = "";
-    teaserBtn.disabled = false;
-    document.getElementById('teaserTaunt').textContent = "";
-
-    document.getElementById('loveYesBtn').classList.remove('picked');
-    document.getElementById('loveMaybeBtn').classList.remove('picked');
-    document.getElementById('loveNoBtn').classList.remove('picked');
-    document.getElementById('finalSubmitBtn').disabled = true;
-
-    document.querySelectorAll('.reaction-btn').forEach(b=>b.classList.remove('picked'));
-
-    goTo(0);
-  }
-
-  // ---- easter egg: tap credit 5x ----
-  let creditTapCount = 0;
-  function tapCredit(){
-    creditTapCount++;
-    if(creditTapCount === 5){
-      document.getElementById('secretMsg').classList.remove('hidden');
-    }
-  }
-
-  // ---- attempt tracking (per browser) ----
-  function peekAttemptNumber(){
-    return parseInt(localStorage.getItem('armaghan_attempt_count') || "0", 10);
-  }
-  function getAttemptNumber(){
-    let n = peekAttemptNumber() + 1;
-    localStorage.setItem('armaghan_attempt_count', n);
-    return n;
-  }
-  function ordinalLabel(n){
-    if(n === 1) return "1st time";
-    if(n === 2) return "2nd time";
-    if(n === 3) return "3rd time";
-    return n + "th time";
-  }
-
-  async function submitAnswers(){
-    const attemptNum = getAttemptNumber();
-    const label = ordinalLabel(attemptNum);
-    lastSubmissionLabel = label;
-
-    const payload = {
-      _subject: `Aqsa's answers — ${label}`,
-      _template: "table",
-      submission_label: label,
-      final_answer: state.finalAnswer,
-      favorite_color_final: state.color,
-      favorite_color_changes: history.color.join(" → ") || "—",
-      favorite_food_final: state.food,
-      favorite_food_changes: history.food.join(" → ") || "—",
-      love_percent_final: state.percent,
-      love_percent_changes: history.percent.join(" → ") || "—",
-      what_she_likes_final: state.likes,
-      what_she_likes_changes: history.likes.join(" → ") || "—",
-      about_her_final: state.about,
-      about_her_changes: history.about.join(" → ") || "—",
-      what_makes_her_smile_final: state.smile,
-      what_makes_her_smile_changes: history.smile.join(" → ") || "—",
-      timestamp: new Date().toISOString()
-    };
-
-    document.getElementById('thankTitle').textContent = "Sent! 🎉";
-
-    try{
-      await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    }catch(err){
-      console.error("Could not send answers:", err);
-    }
-  }
-
-  async function sendReaction(emoji){
-    const payload = {
-      _subject: `Aqsa's reaction — ${lastSubmissionLabel || "?"}`,
-      _template: "table",
-      submission_label: lastSubmissionLabel || "—",
-      final_answer: state.finalAnswer,
-      reaction_emoji: emoji,
-      timestamp: new Date().toISOString()
-    };
-    try{
-      await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    }catch(err){
-      console.error("Could not send reaction:", err);
-    }
-  }
-
-  // ---- initial welcome message (discreet, no numbers shown) ----
-  function typeText(el, text, onDone){
-    el.textContent = "";
-    let i = 0;
-    const speed = Math.max(12, Math.min(28, 500/text.length));
-    (function tick(){
-      if(i <= text.length){
-        el.textContent = text.slice(0,i);
-        i++;
-        setTimeout(tick, speed);
-      } else if(onDone){ onDone(); }
-    })();
-  }
-
-  (function initWelcome(){
-    const priorCount = peekAttemptNumber();
-    const seenBefore = priorCount > 0;
-
-    // subtitle lines (typed out)
-    const lines = seenBefore
-      ? ["Just a few quick questions—read them carefully, take your time, and answer honestly! 😊"]
-      : ["Just a few quick questions, read them carefully, take your time, and answer honestly! 😊"];
-    const chosenLine = lines[Math.floor(Math.random()*lines.length)];
-    typeText(document.getElementById('welcomeSub'), chosenLine);
-  })();
-
-  renderDots();
-  setBackground(0);
 </script>
 
 </body>
